@@ -1,0 +1,19 @@
+language: php
+fast_finish: true
+sudo: false
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4
+
+install:
+  - composer install
+  
+script:
+  - composer cs
+  - composer coverage:clover
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover clover.xml

@@ -5,11 +5,13 @@
  */
 package ntnuhtwg.insecurityrefactoring.base;
 
+import java.io.Serializable;
+
 /**
  *
  * @author blubbomat
  */
-public enum ASTType {
+public enum ASTType implements Serializable{
     variable,
     statement,
     expression;

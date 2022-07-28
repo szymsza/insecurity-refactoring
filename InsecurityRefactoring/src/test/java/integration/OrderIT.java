@@ -45,7 +45,7 @@ public class OrderIT {
         
         
         // dot assign
-        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);
+        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);
         List<DFATreeNode> pips = framework.getPips(false, false);
         
         // only one pip
@@ -69,7 +69,7 @@ public class OrderIT {
         
         
         // dot assign
-        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);
+        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);
         List<DFATreeNode> pips = framework.getPips(false, false);
         
         // only one pip

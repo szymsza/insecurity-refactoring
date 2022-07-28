@@ -1,5 +1,5 @@
 {
-    "name": "singleton",
+    "name": "Singleton",
     "type": "dataflow",
 
     "pattern_type": "statement",

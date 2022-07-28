@@ -1,0 +1,72 @@
+2020-02-18 08:04:36.132+0000 INFO [o.n.k.i.s.f.RecordFormatSelector] Record format not configured, selected default: RecordFormat:StandardV3_4[v0.A.9]
+2020-02-18 08:04:37.251+0000 INFO [o.n.k.i.s.DynamicArrayStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db.labels] ...
+2020-02-18 08:04:37.268+0000 INFO [o.n.k.i.s.DynamicArrayStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db.labels] high id=1 (defragged=0)
+2020-02-18 08:04:37.269+0000 INFO [o.n.k.i.s.DynamicArrayStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db.labels rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.270+0000 INFO [o.n.k.i.s.NodeStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db] ...
+2020-02-18 08:04:37.282+0000 INFO [o.n.k.i.s.NodeStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.282+0000 INFO [o.n.k.i.s.NodeStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.nodestore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.283+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index.keys] ...
+2020-02-18 08:04:37.300+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index.keys] high id=1 (defragged=0)
+2020-02-18 08:04:37.300+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index.keys rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.301+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index] ...
+2020-02-18 08:04:37.315+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index] high id=0 (defragged=0)
+2020-02-18 08:04:37.316+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.index rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.327+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.strings] ...
+2020-02-18 08:04:37.344+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.strings] high id=1 (defragged=0)
+2020-02-18 08:04:37.344+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.strings rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.344+0000 INFO [o.n.k.i.s.DynamicArrayStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.arrays] ...
+2020-02-18 08:04:37.360+0000 INFO [o.n.k.i.s.DynamicArrayStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.arrays] high id=1 (defragged=0)
+2020-02-18 08:04:37.360+0000 INFO [o.n.k.i.s.DynamicArrayStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db.arrays rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.361+0000 INFO [o.n.k.i.s.PropertyStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db] ...
+2020-02-18 08:04:37.375+0000 INFO [o.n.k.i.s.PropertyStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.375+0000 INFO [o.n.k.i.s.PropertyStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.propertystore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.376+0000 INFO [o.n.k.i.s.RelationshipStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipstore.db] ...
+2020-02-18 08:04:37.390+0000 INFO [o.n.k.i.s.RelationshipStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipstore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.391+0000 INFO [o.n.k.i.s.RelationshipStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipstore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.391+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db.names] ...
+2020-02-18 08:04:37.407+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db.names] high id=1 (defragged=0)
+2020-02-18 08:04:37.407+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db.names rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.408+0000 INFO [o.n.k.i.s.RelationshipTypeTokenStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db] ...
+2020-02-18 08:04:37.419+0000 INFO [o.n.k.i.s.RelationshipTypeTokenStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.420+0000 INFO [o.n.k.i.s.RelationshipTypeTokenStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.relationshiptypestore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.427+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db.names] ...
+2020-02-18 08:04:37.446+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db.names] high id=1 (defragged=0)
+2020-02-18 08:04:37.446+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db.names rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.446+0000 INFO [o.n.k.i.s.LabelTokenStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db] ...
+2020-02-18 08:04:37.492+0000 INFO [o.n.k.i.s.LabelTokenStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.492+0000 INFO [o.n.k.i.s.LabelTokenStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.labeltokenstore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.503+0000 INFO [o.n.k.i.s.SchemaStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.schemastore.db] ...
+2020-02-18 08:04:37.518+0000 INFO [o.n.k.i.s.SchemaStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.schemastore.db] high id=1 (defragged=0)
+2020-02-18 08:04:37.519+0000 INFO [o.n.k.i.s.SchemaStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.schemastore.db rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.519+0000 INFO [o.n.k.i.s.RelationshipGroupStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipgroupstore.db] ...
+2020-02-18 08:04:37.533+0000 INFO [o.n.k.i.s.RelationshipGroupStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipgroupstore.db] high id=1 (defragged=0)
+2020-02-18 08:04:37.533+0000 INFO [o.n.k.i.s.RelationshipGroupStore] /home/blubbomat/Development/FindPOI/graph.db/neostore.relationshipgroupstore.db rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.533+0000 INFO [o.n.k.i.s.MetaDataStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/neostore] ...
+2020-02-18 08:04:37.546+0000 INFO [o.n.k.i.s.MetaDataStore] [/home/blubbomat/Development/FindPOI/graph.db/neostore] high id=15 (defragged=0)
+2020-02-18 08:04:37.547+0000 INFO [o.n.k.i.s.MetaDataStore] /home/blubbomat/Development/FindPOI/graph.db/neostore rebuild id generator, highId=15 defragged count=0
+2020-02-18 08:04:37.547+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index.keys] ...
+2020-02-18 08:04:37.560+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index.keys] high id=1 (defragged=0)
+2020-02-18 08:04:37.560+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index.keys rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.561+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index] ...
+2020-02-18 08:04:37.571+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index] high id=0 (defragged=0)
+2020-02-18 08:04:37.571+0000 INFO [o.n.k.i.s.PropertyKeyTokenStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.index rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.578+0000 INFO [o.n.k.i.s.DynamicStringStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.strings] ...
+2020-02-18 08:04:37.591+0000 INFO [o.n.k.i.s.DynamicStringStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.strings] high id=1 (defragged=0)
+2020-02-18 08:04:37.591+0000 INFO [o.n.k.i.s.DynamicStringStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.strings rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.592+0000 INFO [o.n.k.i.s.DynamicArrayStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.arrays] ...
+2020-02-18 08:04:37.604+0000 INFO [o.n.k.i.s.DynamicArrayStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.arrays] high id=1 (defragged=0)
+2020-02-18 08:04:37.604+0000 INFO [o.n.k.i.s.DynamicArrayStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db.arrays rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.604+0000 INFO [o.n.k.i.s.PropertyStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db] ...
+2020-02-18 08:04:37.619+0000 INFO [o.n.k.i.s.PropertyStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db] high id=0 (defragged=0)
+2020-02-18 08:04:37.619+0000 INFO [o.n.k.i.s.PropertyStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.propertystore.db rebuild id generator, highId=0 defragged count=0
+2020-02-18 08:04:37.619+0000 INFO [o.n.k.i.s.RelationshipGroupStore] Rebuilding id generator for[/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.relationshipgroupstore.db] ...
+2020-02-18 08:04:37.634+0000 INFO [o.n.k.i.s.RelationshipGroupStore] [/home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.relationshipgroupstore.db] high id=1 (defragged=0)
+2020-02-18 08:04:37.634+0000 INFO [o.n.k.i.s.RelationshipGroupStore] /home/blubbomat/Development/FindPOI/graph.db/temp.db/temp.db/neostore.relationshipgroupstore.db rebuild id generator, highId=1 defragged count=0
+2020-02-18 08:04:37.644+0000 WARN [o.n.k.i.s.MetaDataStore] Missing counts store, rebuilding it.
+2020-02-18 08:04:37.657+0000 WARN [o.n.k.i.s.MetaDataStore] Counts store rebuild completed.
+2020-02-18 08:04:37.700+0000 INFO [o.n.u.i.b.ImportLogic] Import starting
+2020-02-18 08:04:39.930+0000 INFO [o.n.k.i.s.c.CountsTracker] Rotated counts store at transaction 1 to [/home/blubbomat/Development/FindPOI/graph.db/neostore.counts.db.b], from [/home/blubbomat/Development/FindPOI/graph.db/neostore.counts.db.a].
+2020-02-18 08:04:39.941+0000 INFO [o.n.u.i.b.ImportLogic] Import completed successfully, took 2s 233ms. Imported:
+  8990 nodes
+  10796 relationships
+  48674 properties

@@ -30,7 +30,7 @@ public class Javascript extends Context {
     public boolean isEscapable(ContextInfo contextInfo, CharsAllowed charsAllowed, VulnerabilityDescription description) {
         boolean isEscapable = charsAllowed.areCharsAllowed(contextInfo.getSufficientEscapes(), '>');
         if (isEscapable) {
-            description.addToExploitPath("Use the > to escape the Javascript context");
+            description.addToExploitPath("Use the > character to escape the Javascript context");
         }
         return isEscapable;
     }

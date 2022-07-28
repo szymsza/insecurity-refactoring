@@ -1,5 +1,5 @@
 {
-	"name":"class_var_assign_string",
+	"name":"Class param assignment",
 	"type":"dataflow",
         
         "pattern_type": "statement",

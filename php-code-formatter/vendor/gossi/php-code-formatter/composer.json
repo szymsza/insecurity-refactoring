@@ -1,0 +1,51 @@
+{
+	"name" : "gossi/php-code-formatter",
+	"type" : "library",
+	"description" : "A code formatter for php code",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Thomas Gossmann",
+			"homepage" : "http://gos.si"
+		}
+	],
+	"keywords" : [
+		"php",
+		"formatter",
+		"beautifier"
+	],
+	"support" : {
+		"issues" : "https://github.com/gossi/php-code-formatter/issues"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"gossi\\formatter\\" : "src"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"gossi\\formatter\\tests\\" : "tests"
+		}
+	},
+	"require" : {
+		"php" : ">=7.2",
+		"gossi/php-code-profiles" : "dev-master",
+		"symfony/config" : "^5.0",
+		"symfony/yaml" : "^5.0",
+		"symfony/event-dispatcher" : "~2|^3|^4",
+		"symfony/console" : "~2|^3|^4",
+		"phootwork/collection" : "^1.5",
+		"phootwork/tokenizer" : "~0"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "^5.7",
+		"sami/sami" : "^4|^3",
+		"phootwork/php-cs-fixer-config" : "~0.1"
+	},
+	"scripts" : {
+		"check" : "@cs",
+		"cs" : "php-cs-fixer fix -v --diff --dry-run",
+		"cs-fix" : "php-cs-fixer fix -v --diff",
+		"test" : "phpunit",
+		"api" : "sami.php update sami.php"
+	}
+}

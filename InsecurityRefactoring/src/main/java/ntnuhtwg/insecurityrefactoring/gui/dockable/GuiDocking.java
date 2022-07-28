@@ -51,7 +51,7 @@ public class GuiDocking {
         // init frame
         JFrame frame = new JFrame("Insecurity Refactoring");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(20, 20, 400, 400);
+        frame.setBounds(20, 20, 700, 700);
         frame.setVisible(true);
 
         try {
@@ -91,7 +91,7 @@ public class GuiDocking {
 		 * are the anchor points for the Dockables. To make things easier we use the
 		 * default "CContentArea" which is offered by the CControl. It does not require
 		 * any additional setup other than putting it on the main-frame. */
-        frame.add(control.getContentArea());
+        // frame.add(control.getContentArea());
 
 //        CWorkingArea refactoringArea = control.createWorkingArea("refactoring");
 //        CWorkingArea editPatternsArea = control.createWorkingArea("Edit patterns");
@@ -112,13 +112,7 @@ public class GuiDocking {
 //        refactoring.setLocation(refactoringArea.getStationLocation());        
 //        refactoring.setWorkingArea(refactoringArea);
 //        refactoring.setVisible(true);
-        CGrid grid = new CGrid(control);
-        grid.add(0, 0, 1, 2, createDockable("PIP finder", Color.WHITE, pIPRenderer));
-        grid.add(1, 0, 1, 1, createDockable("Edit patterns", Color.GREEN, new PatternEditor()));
-        grid.add(1, 1, 1, 1, createDockable("AST", Color.GREEN, new ASTRenderer(framework)));
-        grid.add(1, 1, 1, 1, createDockable("Code Tester", Color.GREEN, new PatternTesterPanel(framework.getPatternStorage(), "")));
-
-        control.getContentArea().deploy(grid);
+        frame.add(pIPRenderer);
 
 //        CWorkingArea workingArea = control.createWorkingArea("work");
 //        

@@ -58,8 +58,9 @@ public class DataflowPathInfo {
     
     public CharsAllowed getMergedAllowedChars(){
         CharsAllowed mergedAllows = new CharsAllowed();
-        
-        mergedAllows.mergeFromAnother(getSource().getSourcePattern().getCharsAllowed());
+        if(getSource() != null && getSource().getSourcePattern() != null){
+            mergedAllows.mergeFromAnother(getSource().getSourcePattern().getCharsAllowed());
+        }
         
         for(Pair<SanitizePattern, DFATreeNode> sanitize : sanitizeNodes){
             mergedAllows.mergeFromAnother(sanitize.getValue0().getCharsAllowed());
@@ -69,7 +70,7 @@ public class DataflowPathInfo {
     
     public List<Enclosure> getMergedEnclosureList(){
         LinkedList<Enclosure> addsEnclosureMerged = new LinkedList<>();
-        if(dataflowSource.getSourcePattern().getAddsEnclosure() != null){
+        if(dataflowSource != null && dataflowSource.getSourcePattern() != null && dataflowSource.getSourcePattern().getAddsEnclosure() != null){
             addsEnclosureMerged.add(dataflowSource.getSourcePattern().getAddsEnclosure());
         }
         
@@ -82,8 +83,11 @@ public class DataflowPathInfo {
     public VulnerabilityDescription getVulnerabilityInfo() {      
         return SufficientFilter.isSufficient(getMergedAllowedChars(), contextInfo, getMergedEnclosureList());
     }
-    
-    
+
+    public String toString() {
+        // TODO: better string
+        return "Dataflow " + Integer.toHexString(hashCode());
+    }
     
     
     

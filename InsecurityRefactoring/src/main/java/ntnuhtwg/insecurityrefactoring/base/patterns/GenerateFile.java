@@ -5,11 +5,13 @@
  */
 package ntnuhtwg.insecurityrefactoring.base.patterns;
 
+import java.io.Serializable;
+
 /**
  *
  * @author blubbomat
  */
-public class GenerateFile {
+public class GenerateFile implements Serializable{
     private  String path;
     private String fileContent;
 

@@ -37,7 +37,7 @@
                                                         [
                                                             {
                                                                 "type": "AST_PROP_GROUP",
-                                                                "flags": ["[WARNING] Unexpected flags for kind: kind=767 and flags=512"],
+                                                                "flags": ["MODIFIER_PRIVATE"],
                                                                 "children":
                                                                         [
                                                                             {
@@ -73,7 +73,7 @@
                                                             ,
                                                             {
                                                                 "type": "AST_PROP_GROUP",
-                                                                "flags": ["[WARNING] Unexpected flags for kind: kind=767 and flags=513"],
+                                                                "flags": ["MODIFIER_PRIVATE", "MODIFIER_STATIC"],
                                                                 "children":
                                                                         [
                                                                             {
@@ -191,7 +191,7 @@
                                                             ,
                                                             {
                                                                 "type": "AST_METHOD",
-                                                                "flags": ["MODIFIER_PUBLIC,MODIFIER_STATIC"],
+                                                                "flags": ["MODIFIER_PUBLIC","MODIFIER_STATIC"],
                                                                 "children":
                                                                         [
                                                                             {

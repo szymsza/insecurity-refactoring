@@ -10,11 +10,10 @@ import java.awt.Label;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import ntnuhtwg.insecurityrefactoring.base.DataType;
+import ntnuhtwg.insecurityrefactoring.base.GlobalSettings;
 import ntnuhtwg.insecurityrefactoring.base.SourceLocation;
 import ntnuhtwg.insecurityrefactoring.base.Util;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
@@ -36,19 +35,21 @@ public class DataFlowRefactorPanel extends JPanel{
     public DataFlowRefactorPanel(DFATreeNode node, DataflowDSL dsl) {        
         this.node = node;
         
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         SourceLocation location = Util.codeLocation(dsl.getDb(), node.getObj());
-        this.add(new Label("Dataflow"));
-        this.add(new Label(location.toString()));
-//        this.add(new JLabel(node.toString()));
+        JLabel label = new JLabel(Util.relativizePath(location.toString()));
+        label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        this.add(label);
         
         selectedRefactorPattern.addItem(none);
-        selectedRefactorPattern.setMaximumSize(new Dimension(500, 50));
+        selectedRefactorPattern.setMaximumSize(new Dimension(400, 25));
         
         for(DataflowPattern dataflowPattern : node.getPossibleDataflowReplacements()){
             selectedRefactorPattern.addItem(dataflowPattern);
         }
+        selectedRefactorPattern.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        this.add(Box.createVerticalStrut(GlobalSettings.basicSpacingSmaller));
         this.add(selectedRefactorPattern);
     }
 

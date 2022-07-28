@@ -23,6 +23,7 @@ import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
 import ntnuhtwg.insecurityrefactoring.base.patterns.PatternStorage;
 import ntnuhtwg.insecurityrefactoring.constructor.CodeSampleCreator;
 import ntnuhtwg.insecurityrefactoring.gui.dockable.GuiDocking;
+import ntnuhtwg.insecurityrefactoring.refactor.analyze.ACIDAnalyzer;
 import ntnuhtwg.insecurityrefactoring.refactor.temppattern.ScanProgress;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -106,7 +107,7 @@ public class Main {
             }
             String path = cmd.getOptionValue("p");
             ScanProgress scanProgress = new ScanProgress();
-            framework.scan(path, !cmd.hasOption("n"), specificPattern, scanProgress, cmd.hasOption("c"), specificLocation);
+            framework.scan(path, !cmd.hasOption("n"), specificPattern, scanProgress, cmd.hasOption("c"), specificLocation, cmd.hasOption("cache"));
             List<ACIDTree> pipInformation = framework.getPipInformation();
 
             if (cmd.hasOption("o")) {
@@ -152,9 +153,13 @@ public class Main {
                 boolean vulnerable = false;
                 for (DataflowPathInfo pathInfo : pipInfo.getPossibleSources()) {
                     paths++;
-                    if (pathInfo.getVulnerabilityInfo().isVulnerable()) {
-                        vulns++;
-                        vulnerable = true;
+                    if (cmd.hasOption("check-vuln")){
+                        // TODO: do a dataflow analysis!!!
+                        System.out.println("NOT IMPLEMENTED: check-vuln on analysis currently not supported!!!");
+//                        if (pathInfo.getVulnerabilityInfo().isVulnerable()) {
+//                            vulns++;
+//                            vulnerable = true;
+//                        }
                     }
                     if (pathInfo.isContainsTimeout()) {
                         timeouts++;
@@ -174,7 +179,9 @@ public class Main {
             System.out.println("");
             System.out.println("##### Summary #####");
             System.out.println("FOUND PIPs: " + framework.getPips(requiresSanitize, false).size());
-            System.out.println("Vulnerable: " + vulnerabilities);
+            if(cmd.hasOption("check-vuln")){
+                System.out.println("(NOT SUPPORTED) Vulnerable: " + vulnerabilities);
+            }
         } else if (cmd.hasOption("s")) {
             String path = cmd.getOptionValue("s");
             framework.scanSubFolders(path, specificPattern, requiresSanitize, new ScanProgress(), cmd.hasOption("c"));
@@ -182,7 +189,7 @@ public class Main {
         }
         else if(cmd.hasOption("f")){
             String path = cmd.getOptionValue("f");
-            framework.scan(path, false, specificPattern, new ScanProgress(), cmd.hasOption("c"), null);
+            framework.scan(path, false, specificPattern, new ScanProgress(), cmd.hasOption("c"), null, false);
             framework.formatCode();
         }
         else {
@@ -207,6 +214,8 @@ public class Main {
     private static Options options() {
         Options options = new Options();
         options.addOption("p", "path", true, "Path to analyse.");
+        options.addOption(null, "cache", false, "Analyse from cached pips");
+        options.addOption(null, "check-vuln", false, "Checks, on scan. if the PIP is a vulnerability. Takes a lot of time!");
 
         options.addOption("s", "subprojects", true, "Scan the subfolder and store results in txt files.");
 
@@ -221,6 +230,8 @@ public class Main {
         
         options.addOption("c", "control-check", false, "Do a check for control functions. Takes a lot of time!");
         options.addOption("specificsink", false, "specific sink code location: provided like following path:linenumber");
+        
+   
         
         options.addOption("generate_samples", true, "Generate samples into the given folder. To generate the files the -genFiles parameter is required");
         options.addOption("no_docker", false, "Will not generate docker files");

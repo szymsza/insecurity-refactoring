@@ -1,5 +1,5 @@
 {
-	"name":"_REQUEST",	
+	"name":"$_REQUEST",
 	"type":"source",
         "secure":false,
     

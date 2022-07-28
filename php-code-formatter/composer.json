@@ -1,0 +1,13 @@
+{
+    "name": "jakub/insecurity-refactoring",
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/szymsza/php-code-formatter"
+        }
+    ],
+    "require": {
+        "gossi/php-code-formatter": "dev-master"
+    }
+}

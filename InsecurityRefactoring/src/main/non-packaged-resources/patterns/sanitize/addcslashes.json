@@ -16,7 +16,8 @@
         "generates": [
         { 
             "params": ["<s>(;:'\")"], 
-            "filters":[]
+            "filters":[],
+            "pattern_note":"Escapes characters with \\ but can be bypassed because \\ is not escaped. E.g. \\\" to bypass the escaping of \"."
         }
     ],
     

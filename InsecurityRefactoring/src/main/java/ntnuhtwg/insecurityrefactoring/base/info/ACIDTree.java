@@ -15,9 +15,7 @@ import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
  */
 public class ACIDTree {
     private DFATreeNode sink;
-    
-    
-    
+
     private List<DataflowPathInfo> possibleSources = new LinkedList<>();
 
     public ACIDTree(DFATreeNode sink) {
@@ -40,14 +38,14 @@ public class ACIDTree {
     public boolean isVulnSink(){
         return getSink() != null && !getSink().getSinkPattern().isIsSafe();
     }
-    
+
 
     @Override
     public String toString() {
         String retval = "PIP(";
         if(sink != null){
             retval += sink.getSinkPattern().getVulnType() + ")";
-            retval += ": " + sink.getSourceLocation().toString();
+            retval += ": " + sink.getSourceLocationRelative();
         }
         return retval;
     }

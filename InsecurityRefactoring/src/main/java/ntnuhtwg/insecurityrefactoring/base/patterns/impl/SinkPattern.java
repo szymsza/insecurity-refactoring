@@ -36,6 +36,7 @@ public class SinkPattern extends Pattern{
     private String vulnType;
     private boolean isSafe = false;
     private Set<EscapeChar> sufficientEscapeChars = new HashSet<>();
+    private List<String> exludeContext = new LinkedList<>();
     
     List<String> generateOutputCodeLines;
 
@@ -81,6 +82,14 @@ public class SinkPattern extends Pattern{
 
     public Set<EscapeChar> getSufficientEscapeChars() {
         return sufficientEscapeChars;
+    }
+
+    public List<String> getExludeContext() {
+        return exludeContext;
+    }
+
+    public void setExludeContext(List<String> exludeContext) {
+        this.exludeContext = exludeContext;
     }
     
     

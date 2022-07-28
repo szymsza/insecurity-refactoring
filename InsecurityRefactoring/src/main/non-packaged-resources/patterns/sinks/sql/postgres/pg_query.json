@@ -5,6 +5,8 @@
 
     "pattern_type": "expression",
     "input_type": "expression",
+    
+    "exclude_context":["sql_quotes"],
 
     "sufficient_escapes": ["\\"],
 

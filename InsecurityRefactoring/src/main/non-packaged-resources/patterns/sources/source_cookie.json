@@ -1,5 +1,5 @@
 {
-	"name":"_COOKIE",	
+	"name":"$_COOKIE",
 	"type":"source",
         "secure":false,
         "filters": [],

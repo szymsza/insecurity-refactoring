@@ -5,22 +5,17 @@
  */
 package ntnuhtwg.insecurityrefactoring.base.tree;
 
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Stack;
+
 import ntnuhtwg.insecurityrefactoring.base.ASTNodeTypes;
 import ntnuhtwg.insecurityrefactoring.base.DataType;
 import ntnuhtwg.insecurityrefactoring.base.SourceLocation;
 import ntnuhtwg.insecurityrefactoring.base.Util;
 import ntnuhtwg.insecurityrefactoring.base.ast.BaseNode;
 import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
+import ntnuhtwg.insecurityrefactoring.base.patterns.Pattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.DataflowPattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SanitizePattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SinkPattern;
@@ -30,7 +25,7 @@ import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SourcePattern;
  *
  * @author blubbomat
  */
-public class DFATreeNode extends LabeledTreeNode<INode>{
+public class DFATreeNode extends LabeledTreeNode<INode> implements Serializable{
     
     
     private DataType inputType = DataType.Unknown();
@@ -160,6 +155,10 @@ public class DFATreeNode extends LabeledTreeNode<INode>{
         return sourceLocation;
     }
 
+    public String getSourceLocationRelative() {
+        return Util.relativizePath(sourceLocation.toString());
+    }
+
     public void setSourceLocation(SourceLocation sourceLocation) {
         this.sourceLocation = sourceLocation;
     }
@@ -220,6 +219,7 @@ public class DFATreeNode extends LabeledTreeNode<INode>{
     }
 
     public List<DataflowPattern> getPossibleDataflowReplacements() {
+        possibleDataflowReplacements.sort(Comparator.comparing(Pattern::getName, String.CASE_INSENSITIVE_ORDER));
         return possibleDataflowReplacements;
     }
     

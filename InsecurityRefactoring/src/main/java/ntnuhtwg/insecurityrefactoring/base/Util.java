@@ -46,6 +46,7 @@ import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
 import ntnuhtwg.insecurityrefactoring.base.patterns.PatternStorage;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.DataflowPattern;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
+import ntnuhtwg.insecurityrefactoring.gui.insecurityrefactoring.PIPRenderer;
 import ntnuhtwg.insecurityrefactoring.print.PrintAST;
 import org.apache.commons.io.FileUtils;
 import org.neo4j.driver.Record;
@@ -199,6 +200,12 @@ public class Util {
 //            return "";
 //        }
 //    }
+
+    public static String relativizePath(String absolutePath) {
+        String projectBasePath = PIPRenderer.scanAbsolutePath;
+        return absolutePath.substring(projectBasePath.length() + 1);
+    }
+
     public static TreeNode<INode> createTree(Neo4jDB db, INode topNode) throws TimeoutException {
         TreeNode<INode> retval = new TreeNode(topNode);
         DataflowDSL dsl = new DataflowDSL(db);
@@ -224,6 +231,27 @@ public class Util {
             String input = Files.readString(path);
 
             MessageDigest mDigest = MessageDigest.getInstance("SHA1");
+            byte[] result = mDigest.digest(input.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < result.length; i++) {
+                sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return sb.toString();
+        } catch (Exception ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return "sha1 not found!";
+    }
+    
+    public static String sha256FromFile(String pathStr) {
+        Path path = Path.of(pathStr);
+
+        try {
+            String input = Files.readString(path);
+
+            MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
             byte[] result = mDigest.digest(input.getBytes());
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < result.length; i++) {

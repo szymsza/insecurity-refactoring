@@ -42,7 +42,11 @@ public class BaseNode implements INode{
 
     @Override
     public int getInt(String property) {
-        return Integer.valueOf(getString(property));
+        String str = getString(property);
+        if (str == null) {
+            str = "0";
+        }
+        return Integer.valueOf(str);
     }
 
     @Override

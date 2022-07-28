@@ -1,5 +1,5 @@
 {
-    "name": "getParam_DefaultDisabled",
+    "name": "Get parameter - default disabled",
     "type": "dataflow",
 
     "pattern_type": "statement",

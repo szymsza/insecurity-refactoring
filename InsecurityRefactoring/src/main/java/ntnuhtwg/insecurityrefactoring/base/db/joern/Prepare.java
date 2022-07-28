@@ -26,28 +26,33 @@ public class Prepare {
     
     public boolean prepareDatabase(String pathToScan, ScanProgress scanProgress) throws IOException, InterruptedException{
         
-        String execute = "./analyse.sh " + pathToScan;
+  
+        Util.runCommand("mkdir .scan_cache", new File(pathToScan));
         
-        String importCommand = "./import_neo4j.sh";
-        
-        File rootFolder = new File(GlobalSettings.rootFolder);
+        File scan_cache = new File(pathToScan + "/.scan_cache");
 
-	System.out.println(rootFolder.getAbsolutePath());
+        File scriptDir = new File(GlobalSettings.rootFolder);
+
+	System.out.println(scriptDir.getAbsolutePath());
         
         System.out.println(pathToScan);
         
-        System.out.println("" + execute);
-        Util.runCommand(execute, rootFolder);
+        String analyse = "sh " + scriptDir.getCanonicalPath()+ "/analyse.sh " + pathToScan;
+        
+        System.out.println("" + analyse);
+        Util.runCommand(analyse, scan_cache);
         scanProgress.joernScanned();
         
-        String content = Util.readLineByLineJava8(rootFolder.getAbsolutePath()+"/cpg_edges.csv");
+        String content = Util.readLineByLineJava8(scan_cache.getCanonicalPath()+"/cpg_edges.csv");
         // checks if CPG creation worked
         if(!content.startsWith(":START_ID")){
             return false;
         }
         
+        
+        String importCommand = "sh " + scriptDir.getCanonicalPath() + "/import_neo4j.sh";
         System.out.println("" + importCommand);
-        Util.runCommand(importCommand, rootFolder);
+        Util.runCommand(importCommand, scan_cache);
         scanProgress.joernImported();
         
         return true;

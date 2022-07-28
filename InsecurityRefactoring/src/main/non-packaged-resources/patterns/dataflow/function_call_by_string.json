@@ -1,5 +1,5 @@
 {
-    "name": "function_call_by_string",
+    "name": "Function call by string",
     "type": "dataflow",
 
     "pattern_type": "statement",
@@ -23,7 +23,7 @@
             [
             ],
 
-    "code": 
+    "code":
             [
                 "<def_func>(sanitize, <param_list_1>(<s>(a)),  <stmtlist>(<return>(<$>(a))))",
                 "<=>(<$>(func), <s>(sanitize))",

@@ -29,7 +29,7 @@ public class FindPipsIT {
         
         for(File pipFolder : pipsFolder.listFiles()){
             if(pipFolder.isDirectory()){
-                framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);
+                framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);
                 if(framework.getPips(false, false).isEmpty()){
                     Assert.fail("Pip not found for: " + pipFolder.getAbsolutePath());
                 }
@@ -48,7 +48,7 @@ public class FindPipsIT {
         Framework framework = new Framework();        
         framework.init();
         
-        framework.scan(path.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), true, specific);
+        framework.scan(path.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), true, specific, false);
         
         if(framework.getPips(false, false).isEmpty()){
             Assert.fail("Pip not found for specific: " );

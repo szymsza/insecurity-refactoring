@@ -46,7 +46,7 @@
                     [
                         "FROM php:7.3-apache",
                         "RUN apt-get update",
-                        "RUN apt-get install -y sqlite",
+                        "RUN apt-get install -y sqlite3",
                         "COPY init.sql /var/www/db/init.sql",
                         "RUN sqlite3 -init /var/www/db/init.sql /var/www/db/database.db",
                         "EXPOSE 80"

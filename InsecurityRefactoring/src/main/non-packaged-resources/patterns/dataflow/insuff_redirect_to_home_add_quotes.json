@@ -1,5 +1,5 @@
 {
-	"name":"insuff_redirect_to_home_add_quotes",
+	"name":"Insufficient redirect home - add quotes",
 	"type":"dataflow",
         
         "pattern_type": "statement",

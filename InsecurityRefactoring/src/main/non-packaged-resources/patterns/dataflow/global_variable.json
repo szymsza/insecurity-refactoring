@@ -1,5 +1,5 @@
 {
-    "name": "global_variable",
+    "name": "Global variable",
     "type": "dataflow",
 
     "pattern_type": "statement",

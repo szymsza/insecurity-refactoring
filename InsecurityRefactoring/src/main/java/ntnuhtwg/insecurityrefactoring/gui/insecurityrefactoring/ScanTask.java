@@ -5,6 +5,7 @@
  */
 package ntnuhtwg.insecurityrefactoring.gui.insecurityrefactoring;
 
+import ntnuhtwg.insecurityrefactoring.base.tools.SourceCodeProvider;
 import ntnuhtwg.insecurityrefactoring.gui.insecurityrefactoring.PIPRenderer;
 import java.io.File;
 import java.util.LinkedList;
@@ -21,26 +22,30 @@ import ntnuhtwg.insecurityrefactoring.refactor.temppattern.ScanProgress;
  */
 public class ScanTask extends SwingWorker<Object, Float> {
 
-    final String scanPath;
     final String scanSpecific;
     final Framework framework;
     final boolean skipPreScan;
     final PIPRenderer pIPRenderer;
     final boolean controlFuncCheck;
     final SourceLocation specificLocation;
+    final boolean fromCache;
 
-    public ScanTask(Framework framework, String scanPath, String scanSpecific, boolean skipPreScan, PIPRenderer pIPRenderer, boolean controlFuncCheck, SourceLocation specificLocation) {
-        this.scanPath = scanPath;
+    public ScanTask(Framework framework, String scanSpecific, boolean skipPreScan, PIPRenderer pIPRenderer, boolean controlFuncCheck, SourceLocation specificLocation, boolean fromCache) {
         this.scanSpecific = scanSpecific;
         this.framework = framework;
         this.skipPreScan = skipPreScan;
         this.pIPRenderer = pIPRenderer;
         this.controlFuncCheck = controlFuncCheck;
         this.specificLocation = specificLocation;
+        this.fromCache = fromCache;
     }
 
     @Override
     protected Object doInBackground() throws Exception {
+        SourceCodeProvider scp = new SourceCodeProvider(PIPRenderer.scanAbsolutePath, this.pIPRenderer);
+        String scanPath = scp.getFilesystemPath();
+
+        this.pIPRenderer.setScanningInProgressText();
         File folderToScan = new File(scanPath);
         ScanProgress scanProgress = new ScanProgress();
         scanProgress.setGuiTask(this);
@@ -51,9 +56,9 @@ public class ScanTask extends SwingWorker<Object, Float> {
                 specificPatterns.add(scanSpecific);
             }
 
-            framework.scan(folderToScan.getAbsolutePath(), !skipPreScan, specificPatterns, scanProgress, controlFuncCheck, specificLocation);
+            framework.scan(folderToScan.getAbsolutePath(), !skipPreScan, specificPatterns, scanProgress, controlFuncCheck, specificLocation, fromCache);
         } else {
-            JOptionPane.showMessageDialog(null, "Path is invalid!");
+            JOptionPane.showMessageDialog(null, "Error loading the project!");
         }
 
         return null;

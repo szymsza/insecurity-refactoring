@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import ntnuhtwg.insecurityrefactoring.base.DataType;
+import ntnuhtwg.insecurityrefactoring.base.GlobalSettings;
 import ntnuhtwg.insecurityrefactoring.base.SourceLocation;
 import ntnuhtwg.insecurityrefactoring.base.Util;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
@@ -42,10 +42,12 @@ public class SanitizeRefactorPanel extends JPanel{
     SanitizeRefactorPanel(Pair<SanitizePattern, DFATreeNode> sanitizeNodePair, List<SanitizePattern> possiblePatterns, DataflowDSL dsl) {
         this.sanitize = sanitizeNodePair.getValue0();
         this.node = sanitizeNodePair.getValue1();
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         
         SourceLocation location = Util.codeLocation(dsl.getDb(), node.getObj());
-        this.add(new Label(location.toString()));
+        JLabel label = new JLabel(Util.relativizePath(location.toString()));
+        label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        this.add(label);
 
         
         for(SanitizePattern pattern : possiblePatterns){
@@ -54,8 +56,9 @@ public class SanitizeRefactorPanel extends JPanel{
         
         failedSanPatterns.addItem(new NoChangePattern());
         
-        failedSanPatterns.setMaximumSize(new Dimension(500, 50));
-
+        failedSanPatterns.setMaximumSize(new Dimension(400, 25));
+        failedSanPatterns.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        this.add(Box.createVerticalStrut(GlobalSettings.basicSpacingSmaller));
         this.add(failedSanPatterns);
     }
 

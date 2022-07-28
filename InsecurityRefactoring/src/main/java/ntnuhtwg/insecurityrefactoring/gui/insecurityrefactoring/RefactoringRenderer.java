@@ -5,37 +5,26 @@
  */
 package ntnuhtwg.insecurityrefactoring.gui.insecurityrefactoring;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Label;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import ntnuhtwg.insecurityrefactoring.Framework;
+import ntnuhtwg.insecurityrefactoring.base.GlobalSettings;
 import ntnuhtwg.insecurityrefactoring.base.RefactoredCode;
-import ntnuhtwg.insecurityrefactoring.base.SwingUtil;
 import ntnuhtwg.insecurityrefactoring.base.Util;
 import ntnuhtwg.insecurityrefactoring.base.exception.TimeoutException;
+import ntnuhtwg.insecurityrefactoring.base.tools.CodeFormatter;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
-import ntnuhtwg.insecurityrefactoring.base.db.neo4j.dsl.cypher.DataflowDSL;
 import ntnuhtwg.insecurityrefactoring.base.info.ContextInfo;
 import ntnuhtwg.insecurityrefactoring.base.info.DataflowPathInfo;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.DataflowPattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SanitizePattern;
-import ntnuhtwg.insecurityrefactoring.base.patterns.PatternStorage;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SourcePattern;
-import ntnuhtwg.insecurityrefactoring.base.tools.CodeFormatter;
 import ntnuhtwg.insecurityrefactoring.gui.DataFlowRefactorPanel;
-import ntnuhtwg.insecurityrefactoring.refactor.InsecurityRefactoring;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
@@ -59,18 +48,57 @@ public class RefactoringRenderer extends JPanel{
     private List<SanitizeRefactorPanel> failedSanitizeSelections = new LinkedList<>();
     private List<DataFlowRefactorPanel> dataflowSelections = new LinkedList<>();
     private RefactorPanel secureSources = null;
-    
+
+    private JPanel noSourceCodeMessage = new JPanel();
+
+    private JPanel writingToDiskMessage = new JPanel();
+
+    private JPanel writtenToDiskMessage = new JPanel();
+
+    private JLabel noSourceCodeLabel = new JLabel("Select refactoring options in the left panel", JLabel.CENTER);
+
+    JCheckBox reformatProject = new JCheckBox("Reformat the project code", true);
+
+    String[] timestampsOptions = { "Don't modify", "Set all to today", "Set all randomly", "Decoy - 90% older, 10% today" };
+
+    JComboBox<String> timestampsSelect = new JComboBox<>(timestampsOptions);
+
     JTabbedPane sourceCodePreview = new JTabbedPane();    
     
 
     public RefactoringRenderer(Framework framework) {
         this.setLayout(new BorderLayout());
         this.framework = framework;
+        west.setBorder(new EmptyBorder(GlobalSettings.basicSpacingLarger, GlobalSettings.basicSpacingLarger, GlobalSettings.basicSpacingLarger, GlobalSettings.basicSpacingLarger));
         west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
-        west.add(new JLabel("Test"));
+        west.setMaximumSize(new Dimension(400, 0));
+        west.setPreferredSize(west.getMaximumSize());
+
+        noSourceCodeMessage.setLayout(new GridLayout(1, 1));
+        noSourceCodeMessage.setAlignmentX(JLabel.CENTER);
+        noSourceCodeMessage.add(noSourceCodeLabel);
+
+        writingToDiskMessage.setLayout(new GridLayout(12, 1));
+        for (int i = 0; i < 5; i++) {
+            writingToDiskMessage.add(new JLabel(""));
+        }
+        writingToDiskMessage.setAlignmentX(JLabel.CENTER);
+        JLabel writingToDiskText = new JLabel("Writing refactored project to disk...", JLabel.CENTER);
+        writingToDiskMessage.add(writingToDiskText);
+        JLabel writingToDiskSubtext = new JLabel("This can take up to a few minutes for large projects", JLabel.CENTER);
+        writingToDiskSubtext.setFont(new Font(writingToDiskSubtext.getFont().getFamily(), Font.PLAIN, 13));
+        writingToDiskMessage.add(writingToDiskSubtext);
+        for (int i = 0; i < 5; i++) {
+            writingToDiskMessage.add(new JLabel(""));
+        }
+
+        writtenToDiskMessage.setLayout(new GridLayout(1, 1));
+        writtenToDiskMessage.setAlignmentX(JLabel.CENTER);
+        JLabel writtenToDiskText = new JLabel("Project successfully written to disk", JLabel.CENTER);
+        writtenToDiskMessage.add(writtenToDiskText);
+
         this.add(west, BorderLayout.WEST);
-        
-        this.add(sourceCodePreview, BorderLayout.CENTER);
+        this.renderEmptyMessage();
     }
     
     public String getTitle(){
@@ -84,67 +112,14 @@ public class RefactoringRenderer extends JPanel{
         failedSanitizeSelections.clear();
         dataflowSelections.clear();
         secureSources = null;
+
+        // TODO: Better title
+        title = "Refactor " + source.toString();
+
+        this.renderInputs(source, sanitizeNodes, contextInfo);
+        this.renderButtons();
         
-        title = source.toString();
-        
-        DFATreeNode node = source.getSource();
-        west.add(new JLabel("Secure sources"));
-        if(source.getSource().getSourcePattern().isSourceSufficient(contextInfo)){            
-            List<SourcePattern> insecurePattern = framework.getPatternStorage().getInsecureSources(source.getSource().getSourcePattern(), node, contextInfo);
-            RefactorPanel refactorPanel = new RefactorPanel(node, framework.getDSL(), insecurePattern);
-            west.add(refactorPanel);
-            secureSources = refactorPanel;
-        }
-        
-        west.add(new JLabel("Dataflow patterns"));
-        while(node != null){
-            if(!node.getPossibleDataflowReplacements().isEmpty()){
-                DataFlowRefactorPanel dataFlowRefactorPanel = new DataFlowRefactorPanel(node, framework.getDSL());
-                west.add(dataFlowRefactorPanel);
-                dataflowSelections.add(dataFlowRefactorPanel);
-            }
-            
-            node = node.getParent_();
-        }
-        
-        west.add(new JLabel("Sanitize patterns"));
-        
-        
-        for(Pair<SanitizePattern, DFATreeNode> sanitizeNodePair : sanitizeNodes){
-            String sanitizeName = Util.codeLocation(framework.getDb(), sanitizeNodePair.getValue1().getObj()).shortName()+ " " + sanitizeNodePair.getValue0().getName();
-            JLabel sanitizeLabel = new JLabel(sanitizeName);
-            
-            List<SanitizePattern> possiblePatterns = framework.getPatternStorage().getPossibleFailedSanitizePatterns(sanitizeNodePair.getValue0(), sanitizeNodePair.getValue1(), contextInfo);
-            SanitizeRefactorPanel sanitizeRefactorPanel = new SanitizeRefactorPanel(sanitizeNodePair, possiblePatterns, framework.getDSL());
-            
-            failedSanitizeSelections.add(sanitizeRefactorPanel);            
-            west.add(SwingUtil.layoutBoxY(sanitizeLabel, sanitizeRefactorPanel));
-        }
-        
-        JButton refactor = new JButton("1: refactoring");
-        refactor.addActionListener((arg0) -> {
-            refactor();            
-        });
-        west.add(refactor);
-        
-        JButton writeFiles = new JButton("2: Write to disk");
-        writeFiles.addActionListener((arg0) -> {
-            boolean backupFiles = false;
-            framework.writeToDisk(backupFiles);
-        });
-        west.add(writeFiles);
-        
-        JButton formatCode = new JButton("3: Format source code");
-        formatCode.addActionListener((arg0) -> {
-            int dialogResult = JOptionPane.showConfirmDialog (null, "Do you want to format the code? It will require new scanning for further refactoring.");
-            if(dialogResult == JOptionPane.YES_OPTION){
-              // Saving code here
-                framework.formatCode();
-            }
-        });
-        west.add(formatCode);
-        
-        JButton push = new JButton("Push to git");
+        /*JButton push = new JButton("Push to git");
         push.addActionListener((arg0) -> {
             String msg = JOptionPane.showInputDialog(null);
             System.out.println("Msg: " + msg);
@@ -153,9 +128,171 @@ public class RefactoringRenderer extends JPanel{
             }
         });
         west.add(push);
+        west.add(new JLabel(""));*/
         
     }
-    
+
+    private void renderInputs(DataflowPathInfo source, List<Pair<SanitizePattern, DFATreeNode>> sanitizeNodes, ContextInfo contextInfo) {
+        JPanel westInputsPanel = new JPanel();
+        westInputsPanel.setLayout(new BoxLayout(westInputsPanel, BoxLayout.Y_AXIS));
+
+        DFATreeNode node = source.getSource();
+
+        // Data sources
+        JLabel secureSourcesLabel = new JLabel("Data sources");
+
+        Font headingFont = new Font(secureSourcesLabel.getFont().getFamily(), Font.PLAIN, 20);
+
+        secureSourcesLabel.setFont(headingFont);
+        secureSourcesLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        westInputsPanel.add(secureSourcesLabel);
+        westInputsPanel.add(Box.createVerticalStrut(GlobalSettings.basicSpacing));
+        if(source.getSource().getSourcePattern().isSourceSufficient(contextInfo)){
+            List<SourcePattern> insecurePattern = framework.getPatternStorage().getInsecureSources(source.getSource().getSourcePattern(), node, contextInfo);
+            RefactorPanel refactorPanel = new RefactorPanel(node, framework.getDSL(), insecurePattern);
+            refactorPanel.setAlignmentX(RefactorPanel.LEFT_ALIGNMENT);
+            westInputsPanel.add(refactorPanel);
+            secureSources = refactorPanel;
+        }
+        westInputsPanel.add(Box.createVerticalStrut((int) (GlobalSettings.basicSpacingLarger * 1.25)));
+
+        // Dataflow patterns
+        JLabel dataflowPatternsLabel = new JLabel("Dataflow patterns");
+        dataflowPatternsLabel.setFont(headingFont);
+        dataflowPatternsLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        westInputsPanel.add(dataflowPatternsLabel);
+        westInputsPanel.add(Box.createVerticalStrut(GlobalSettings.basicSpacing));
+        while(node != null){
+            if(!node.getPossibleDataflowReplacements().isEmpty()){
+                DataFlowRefactorPanel dataFlowRefactorPanel = new DataFlowRefactorPanel(node, framework.getDSL());
+                dataFlowRefactorPanel.setAlignmentX(DataFlowRefactorPanel.LEFT_ALIGNMENT);
+                westInputsPanel.add(dataFlowRefactorPanel);
+                dataflowSelections.add(dataFlowRefactorPanel);
+            }
+
+            node = node.getParent_();
+        }
+        westInputsPanel.add(Box.createVerticalStrut((int) (GlobalSettings.basicSpacingLarger * 1.25)));
+
+        // Sanitization
+        if (sanitizeNodes.size() > 0) {
+            JLabel sanitizePatternsLabel = new JLabel("Sanitization");
+            sanitizePatternsLabel.setFont(headingFont);
+            sanitizePatternsLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+            westInputsPanel.add(sanitizePatternsLabel);
+            westInputsPanel.add(Box.createVerticalStrut(GlobalSettings.basicSpacing));
+
+            for (Pair<SanitizePattern, DFATreeNode> sanitizeNodePair : sanitizeNodes) {
+                List<SanitizePattern> possiblePatterns = framework.getPatternStorage().getPossibleFailedSanitizePatterns(sanitizeNodePair.getValue0(), sanitizeNodePair.getValue1(), contextInfo);
+                SanitizeRefactorPanel sanitizeRefactorPanel = new SanitizeRefactorPanel(sanitizeNodePair, possiblePatterns, framework.getDSL());
+
+                sanitizeRefactorPanel.setAlignmentX(SanitizeRefactorPanel.LEFT_ALIGNMENT);
+                failedSanitizeSelections.add(sanitizeRefactorPanel);
+                westInputsPanel.add(sanitizeRefactorPanel);
+            }
+            westInputsPanel.add(Box.createVerticalStrut((int) (GlobalSettings.basicSpacingLarger * 1.25)));
+        }
+
+        westInputsPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        west.add(westInputsPanel);
+    }
+
+    private void renderButtons() {
+        JPanel westButtonsPanel = new JPanel();
+        westButtonsPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+        // Refactor
+        JButton refactor = new JButton("Refactor");
+        refactor.addActionListener((arg0) -> {
+            refactor();
+        });
+        westButtonsPanel.add(refactor);
+
+        westButtonsPanel.add(Box.createVerticalStrut(1));
+        westButtonsPanel.add(new JSeparator());
+
+        reformatProject.setBounds(0,0, 50,50);
+        reformatProject.setToolTipText("Reformatting can take a few minutes for large projects");
+        westButtonsPanel.add(reformatProject);
+        westButtonsPanel.add(Box.createVerticalStrut(0));
+
+        JLabel modifyTimestampsLabel = new JLabel("Modify file timestamps:");
+        Font modifyTimestampsFont = new Font(modifyTimestampsLabel.getFont().getFamily(), Font.PLAIN, 13);
+        modifyTimestampsLabel.setFont(modifyTimestampsFont);
+        westButtonsPanel.add(modifyTimestampsLabel);
+
+        westButtonsPanel.add(timestampsSelect);
+        westButtonsPanel.add(Box.createVerticalStrut(1));
+
+        // Write to disk
+        JButton writeFiles = new JButton("Write to disk");
+        writeFiles.addActionListener((arg0) -> {
+            this.writeToDiskStarted(refactor, writeFiles);
+
+            boolean backupFiles = false;
+            framework.writeToDisk(backupFiles);
+
+            /*
+            int dialogResult = JOptionPane.showConfirmDialog(null, "New scanning will be required after obfuscating the code. Do you wish to continue?");
+            if (dialogResult != JOptionPane.YES_OPTION)
+                return;
+            */
+
+            // Saving code here
+            switch (timestampsSelect.getSelectedIndex()) {
+                case 0: CodeFormatter.changeTimestamps = CodeFormatter.ChangeTimestamps.TIMESTAMPS_KEEP; break;
+                case 1: CodeFormatter.changeTimestamps = CodeFormatter.ChangeTimestamps.TIMESTAMPS_NOW; break;
+                case 2: CodeFormatter.changeTimestamps = CodeFormatter.ChangeTimestamps.TIMESTAMPS_RANDOM; break;
+                default: CodeFormatter.changeTimestamps = CodeFormatter.ChangeTimestamps.TIMESTAMPS_DECOY;
+            }
+
+            CodeFormatter.reformatCode = reformatProject.isSelected();
+
+            ReformatTask task = new ReformatTask(framework, this, writingToDiskMessage, writtenToDiskMessage, refactor, writeFiles);
+            task.execute();
+        });
+        westButtonsPanel.add(writeFiles);
+        Dimension buttonsDimension = new Dimension(250, 220);
+
+        westButtonsPanel.setMaximumSize(buttonsDimension);
+        westButtonsPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        west.add(westButtonsPanel);
+    }
+
+    private void renderEmptyMessage() {
+        this.remove(sourceCodePreview);
+        this.remove(writingToDiskMessage);
+        this.remove(writtenToDiskMessage);
+        this.add(noSourceCodeMessage, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void writeToDiskStarted(JButton refactorButton, JButton writeToDiskButton) {
+        this.remove(sourceCodePreview);
+        this.remove(noSourceCodeMessage);
+        this.remove(writtenToDiskMessage);
+        this.add(writingToDiskMessage, BorderLayout.CENTER);
+
+        this.reformatProject.setEnabled(false);
+        this.timestampsSelect.setEnabled(false);
+        refactorButton.setEnabled(false);
+        writeToDiskButton.setEnabled(false);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public static void writeToDiskFinished(RefactoringRenderer that, Component writingToDiskMessage, Component writtenToDiskMessage, JButton refactorButton, JButton writeToDiskButton) {
+        that.remove(writingToDiskMessage);
+        that.add(writtenToDiskMessage, BorderLayout.CENTER);
+
+        that.reformatProject.setEnabled(true);
+        that.timestampsSelect.setEnabled(true);
+        refactorButton.setEnabled(true);
+        writeToDiskButton.setEnabled(true);
+        that.revalidate();
+        that.repaint();
+    }
     
     private void refactor(){
         List<Triplet<DFATreeNode, SanitizePattern, SanitizePattern>> refactoringData = new LinkedList<>();
@@ -192,10 +329,18 @@ public class RefactoringRenderer extends JPanel{
         
         
         sourceCodePreview.removeAll();
-        
-        for(RefactoredCode refactoredCode : refactoredCodes){
-            RefactoringComparison refactoringComparison = new RefactoringComparison(refactoredCode.getSourceLocation(), refactoredCode.getCode(), refactoredCode.getModifiedLines());
-            sourceCodePreview.addTab(refactoredCode.getSourceLocation().getPath(), refactoringComparison);
+
+        if (refactoredCodes.size() == 0) {
+            this.renderEmptyMessage();
+        } else {
+            this.remove(noSourceCodeMessage);
+            this.remove(writingToDiskMessage);
+            this.remove(writtenToDiskMessage);
+            this.add(sourceCodePreview, BorderLayout.CENTER);
+            for (RefactoredCode refactoredCode : refactoredCodes) {
+                RefactoringComparison refactoringComparison = new RefactoringComparison(refactoredCode.getSourceLocation(), refactoredCode.getCode(), refactoredCode.getModifiedLines());
+                sourceCodePreview.addTab(Util.relativizePath(refactoredCode.getSourceLocation().getPath()), refactoringComparison);
+            }
         }
     }
     

@@ -45,6 +45,7 @@ import ntnuhtwg.insecurityrefactoring.base.info.DataflowPathInfo;
 import ntnuhtwg.insecurityrefactoring.base.patterns.PassthroughPattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.ConcatPattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SinkPattern;
+import ntnuhtwg.insecurityrefactoring.base.pippersist.PIPPersist;
 import org.neo4j.kernel.impl.index.schema.CollectingIndexUpdater;
 
 /**
@@ -63,6 +64,7 @@ public class ACIDTreeCreator implements Runnable {
     private final boolean controlFlowCheck;
 
     private DFATreeNode resultTree;
+    private String scanCachePath;
 
 //    private boolean checkMissingCalls = true;
 //    private boolean debugAddAll = true;
@@ -70,13 +72,14 @@ public class ACIDTreeCreator implements Runnable {
     private int stopOnWidth = 2000;
 
 
-    public ACIDTreeCreator(Neo4jDB db, PatternStorage patternReader, INode sinkNode, SinkPattern pattern, boolean controlFlowCheck) {
+    public ACIDTreeCreator(Neo4jDB db, PatternStorage patternReader, INode sinkNode, SinkPattern pattern, boolean controlFlowCheck, String scanCachePath) {
         this.db = db;
         this.patternReader = patternReader;
         this.dsl = new DataflowDSL(db);
         this.sinkNode = sinkNode;
         this.pattern = pattern;
         this.controlFlowCheck = controlFlowCheck;
+        this.scanCachePath = scanCachePath;
     }
 
     public int getReplaceIndex() {
@@ -135,6 +138,8 @@ public class ACIDTreeCreator implements Runnable {
                     
                 }
                 isPip = true;
+                
+                PIPPersist.persistToCache(scanCachePath, resultTree);
             }
 //                        System.out.println("Finished.");
         } catch (ResultTreeToLarge ex) {

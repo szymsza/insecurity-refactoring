@@ -7,17 +7,19 @@ fi
 
 path=$1
 
+script_dir=$(dirname $(realpath $0))
+
 echo ""
 echo "################################"
 echo "###   Abstract syntax tree   ###"
 echo "################################"
 echo "path: $path"
-./phpjoern/php2ast $path
+$script_dir/phpjoern/php2ast $path
 echo ""
 
 echo ""
 echo "##################################"
 echo "###   Control Property Graph   ###"
 echo "##################################"
-./joern/phpast2cpg nodes.csv rels.csv
+$script_dir/joern/phpast2cpg nodes.csv rels.csv
 echo ""

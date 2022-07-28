@@ -108,6 +108,9 @@ public class JsonPatternParser {
         if (!containsCode(pattern)) {
             parseCode(json, pattern);
         }
+        
+        String patternNode = JSONUtil.getObjectSave(json, "pattern_note", String.class);
+        pattern.setPatternNote(patternNode);
 
         parseGenerateFiles(pattern, json);
 
@@ -304,19 +307,29 @@ public class JsonPatternParser {
 
         sink.setIsSafe(JSONUtil.getObjectSave(json, "safe", Boolean.class, false));
         sink.setGenerateOutputCodeLines(JSONUtil.getListSave(json, "generate_output_code", String.class));
+        
+        List<String> excludeContext = JSONUtil.getListSave(json, "exclude_context", String.class);
+        if(!excludeContext.isEmpty()){
+            sink.setExludeContext(excludeContext);
+        }
         return sink;
     }
 
     private void setSubname(JSONObject json, GenerateParameters sufficientParamaters) {
         StringBuffer name = new StringBuffer((String) json.get("name"));
-        name.append("_prm_");
+        name.append(": ");
 
         for (String param : sufficientParamaters.getParameters()) {
-            name.append("_");
-            name.append(param.replace("/", "_"));
+            name.append(" ");
+            String paramFormatted = param.replace("/", " ")
+                    .replaceAll("<.+>", ""); // remove type info, such as <s>, for better readability
+            name.append(paramFormatted);
         }
 
-        json.put("name", name.toString());
+        String finalName = name.toString().replaceAll(": *$", "")   // trim colon and possible spaces from the end of the name
+                .replaceAll(" +", " "); // remove redundant spaces
+
+        json.put("name", finalName);
     }
 
     protected void replaceAnyWithParameters(JSONObject json, GenerateParameters sufficientParamaters) {

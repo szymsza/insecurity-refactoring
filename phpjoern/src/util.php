@@ -175,9 +175,14 @@ function get_flag_info() : array {
     ];
 
     $combinable = [];
-    $combinable[ast\AST_METHOD] = $combinable[ast\AST_FUNC_DECL] = $combinable[ast\AST_CLOSURE]
-        = $combinable[ast\AST_PROP_DECL] = $combinable[ast\AST_CLASS_CONST_DECL]
-        = $combinable[ast\AST_TRAIT_ALIAS] = $modifiers;
+    $combinable[ast\AST_METHOD] 
+    = $combinable[ast\AST_FUNC_DECL] 
+    = $combinable[ast\AST_CLOSURE]
+    = $combinable[ast\AST_PROP_DECL] 
+    = $combinable[ast\AST_CLASS_CONST_DECL]
+    = $combinable[ast\AST_TRAIT_ALIAS] 
+    = $combinable[ast\AST_PROP_GROUP]
+    = $modifiers;
 
     return [$exclusive, $combinable];
 }

@@ -17,11 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -277,7 +273,8 @@ public class PatternStorage {
             
             insecureSources.add(sourcePatternToCheck);
         }
-        
+
+        insecureSources.sort(Comparator.comparing(Pattern::getName, String.CASE_INSENSITIVE_ORDER));
         return insecureSources;
     }
     
@@ -311,6 +308,15 @@ public class PatternStorage {
             retval.add(potentialFailedSan);
         }
 
+        final String firstOption = "No sanitization";
+        retval.sort((a, b) -> {
+            if (a.getName().equals(firstOption))
+                return -1;
+            if (b.getName().equals(firstOption))
+                return 1;
+
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
         
         return retval;
     }

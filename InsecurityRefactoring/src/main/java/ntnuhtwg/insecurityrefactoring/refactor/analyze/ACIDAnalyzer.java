@@ -62,7 +62,12 @@ public class ACIDAnalyzer {
     
     
     
-    
+    /**
+     * TODO Should return a dataflowpathInfo
+     * @param pipInformation
+     * @param sourceNode
+     * @throws TimeoutException 
+     */
     public void analyse(ACIDTree pipInformation, DataflowPathInfo sourceNode) throws TimeoutException{
         DFATreeNode tree = pipInformation.getSink();
         System.out.println("Analyzing: " + tree + " source: " + sourceNode);

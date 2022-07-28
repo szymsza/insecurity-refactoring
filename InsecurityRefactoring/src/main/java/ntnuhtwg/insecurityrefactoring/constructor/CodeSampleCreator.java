@@ -6,6 +6,14 @@
 package ntnuhtwg.insecurityrefactoring.constructor;
 
 import bibliothek.util.Path;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.load.Dereferencing;
+import com.github.fge.jsonschema.core.load.configuration.LoadingConfiguration;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,6 +37,7 @@ import ntnuhtwg.insecurityrefactoring.base.tree.TreeNode;
 import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
 import ntnuhtwg.insecurityrefactoring.base.ASTType;
 import ntnuhtwg.insecurityrefactoring.base.DataType;
+import ntnuhtwg.insecurityrefactoring.base.GlobalSettings;
 import ntnuhtwg.insecurityrefactoring.base.SourceLocation;
 import ntnuhtwg.insecurityrefactoring.base.Util;
 import ntnuhtwg.insecurityrefactoring.base.context.CharsAllowed;
@@ -51,6 +60,9 @@ import ntnuhtwg.insecurityrefactoring.base.stats.StringCounter;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
 import ntnuhtwg.insecurityrefactoring.print.PrintAST;
 import org.javatuples.Pair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.neo4j.cypher.internal.runtime.RelationshipIterator;
 
 /**
@@ -74,8 +86,25 @@ public class CodeSampleCreator {
     private boolean sampleInfo = true;
     private boolean debugInfo = false; // will probably trigger XSS reports!
 
+    private JsonSchema schema;
+    private JsonSchema schema210;
+
     public CodeSampleCreator(PatternStorage patternStorage) {
         this.patternStorage = patternStorage;
+
+        try {
+            String schemaPath210 = GlobalSettings.filesFolder + "/sarif-schema-2.1.0.json";
+            String schemaPath = GlobalSettings.filesFolder + "/sard-schema.json";
+            JsonNode schemaNode = JsonLoader.fromPath(schemaPath);
+            JsonNode schemaNode210 = JsonLoader.fromPath(schemaPath210);
+
+            JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+
+            schema = factory.getJsonSchema(schemaNode);
+            schema210 = factory.getJsonSchema(schemaNode210);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setCreateManifest(boolean createManifest) {
@@ -112,15 +141,16 @@ public class CodeSampleCreator {
                 }
             }
 
+            System.out.println("WARNING: No filter found " + obj.getType() + ":" + patternName);
             return Collections.EMPTY_LIST;
         }
 
         return listToFilter;
     }
-    
-    private String pathSafeName(String name){
+
+    private String pathSafeName(String name) {
         String folder = name;
-        
+
         folder = folder.replace(" ", "");
         folder = folder.replace("%", "");
         folder = folder.replace("<", "");
@@ -136,7 +166,7 @@ public class CodeSampleCreator {
         folder = folder.replace("^", "d");
         folder = folder.replace("/", "");
         folder = folder.replace("\\", "");
-        
+
         return folder;
     }
 
@@ -167,18 +197,17 @@ public class CodeSampleCreator {
                     for (ContextPattern contextPattern : filterPatterns(patternStorage.getContexts())) {
                         for (SinkPattern sinkPattern : filterPatterns(patternStorage.getSinks())) {
                             String splitBy = storePath + "/SCAN_" + getSplitFolder(contextPattern, sinkPattern, dataflowPattern, sourcePattern, sanitizePattern);
-                            String folder = splitBy 
+                            String folder = splitBy
                                     + "/src_" + pathSafeName(sourcePattern.getName())
                                     + "/san_" + pathSafeName(sanitizePattern.getName())
                                     + "/df_" + pathSafeName(dataflowPattern.getName())
                                     + "/con_" + pathSafeName(contextPattern.getName())
                                     + "/dst_" + pathSafeName(sinkPattern.getName());
-                
 
                             try {
                                 List<VulnerabilityDescription> vulnDescriptions = createSample(contextPattern, sinkPattern, dataflowPattern, sourcePattern, sanitizePattern, folder);
 
-                                if(vulnDescriptions.isEmpty()){
+                                if (vulnDescriptions.isEmpty()) {
                                     continue;
                                 }
                                 sampleCount += 1;
@@ -193,7 +222,7 @@ public class CodeSampleCreator {
                                 sink.add(sinkPattern.getName());
 
 //                                for(VulnerabilityDescription desc : vulnDescriptions){
-                                    vulnTypes.countString(sinkPattern.getVulnType());
+                                vulnTypes.countString(sinkPattern.getVulnType());
 //                                }
 
                                 contextType.get(sinkPattern.getVulnType()).add(contextPattern.getName());
@@ -257,6 +286,10 @@ public class CodeSampleCreator {
         }
         if (!dataflowPattern.getIdentifyPattern().equals("assignment")) {
             throw new GenerateException("Dataflow is not with assignemt identify");
+        }
+
+        if (sinkPattern.getExludeContext().contains(contextPattern.getName())) {
+            throw new GenerateException("Sink excludes specificially the context.");
         }
 
         if (onlyCount) {
@@ -324,22 +357,30 @@ public class CodeSampleCreator {
             }
 
             StringBuffer content = new StringBuffer();
+
+            StringBuffer sampleInformation = new StringBuffer();
+            sampleInformation.append("# Sample information\n\n");
+            sampleInformation.append("Patterns:\n");
+            sampleInformation.append("- Source: ").append(sourcePattern.getName()).append(" ==> ").append(sourcePattern.getCharsAllowed().prettyPrint()).append(patternNote(sourcePattern)).append("\n");
+            sampleInformation.append("- Sanitization: ").append(sanitizePattern.getName()).append(" ==> ").append(sanitizePattern.getCharsAllowed().prettyPrint()).append(patternNote(sanitizePattern)).append("\n");
+            sampleInformation.append("- Filters complete: ").append(vulnDescription.getDataflowPathInfo().getMergedAllowedChars().prettyPrint()).append("\n");
+            sampleInformation.append("- Dataflow: ").append(dataflowPattern.getName()).append(patternNote(dataflowPattern)).append("\n");
+            sampleInformation.append("- Context: ").append(contextPattern.getName()).append(patternNote(contextPattern)).append("\n");
+            sampleInformation.append("- Sink: ").append(sinkPattern.getName()).append(patternNote(sinkPattern)).append("\n\n");
+            sampleInformation.append("State:\n");
+            sampleInformation.append("- State: ").append(vulnDescription.isVulnerable() ? "Bad" : "Good").append("\n");
+            sampleInformation.append("- Exploitable: ").append(vulnDescription.isExploitable() ? "Yes" : "Not found").append("\n\n");
+
+            sampleInformation.append("\n# Exploit description\n\n");
+            int step = 1;
+            for (String exploitStep : vulnDescription.getExploitPath()) {
+                sampleInformation.append(step).append(". ").append(exploitStep).append("\n");
+                step++;
+            }
+
             if (sampleInfo) {
                 content.append("<!--\n");
-                content.append("## Sample information ##\n");
-                content.append("Source: ").append(sourcePattern.getName()).append(" ==> ").append(sourcePattern.getCharsAllowed().prettyPrint()).append("\n");
-                content.append("Sanitization: ").append(sanitizePattern.getName()).append(" ==> ").append(sanitizePattern.getCharsAllowed().prettyPrint()).append("\n");
-                content.append("Filters complete: ").append(vulnDescription.getDataflowPathInfo().getMergedAllowedChars().prettyPrint()).append("\n");
-                content.append("Dataflow: ").append(dataflowPattern.getName()).append("\n");
-                content.append("Context: ").append(contextPattern.getName()).append("\n");
-                content.append("Sink: ").append(sinkPattern.getName()).append("\n");
-                content.append("State: ").append(vulnDescription.isVulnerable() ? "Bad" : "Good").append("\n");
-                content.append("Exploitable: ").append(vulnDescription.isExploitable() ? "Yes" : "Not found").append("\n");
-                if (vulnDescription.isExploitable()) {
-                    content.append("\n## Exploit description ##\n");
-                    content.append(Util.joinStr(vulnDescription.getExploitPath(), "\n")).append("\n");
-                }
-
+                content.append(sampleInformation.toString());
                 content.append("-->\n");
             }
 
@@ -360,7 +401,7 @@ public class CodeSampleCreator {
                     + "Context: " + contextPattern.getName() + "\n"
                     + "Sink: " + sinkPattern.getName();
 
-            if (!writeFiles(folder, content, findSinkId, sinkPattern, folder, vulnDescription.isVulnerable(), vulnDescriptionManifest, contextPattern)) {
+            if (!writeFiles(folder, content, findSinkId, sinkPattern, folder, vulnDescription.isVulnerable(), vulnDescriptionManifest, contextPattern, sampleInformation.toString())) {
                 continue;
             }
 
@@ -369,6 +410,13 @@ public class CodeSampleCreator {
         }
 
         return retval;
+    }
+
+    private String patternNote(Pattern pattern) {
+        if (pattern.hasPatternNote()) {
+            return "[Note: " + pattern.getPatternNote() + "]";
+        }
+        return "";
     }
 
     private VulnerabilityDescription createVulnDescription(SourcePattern sourcePattern, SanitizePattern sanitizePattern, ContextPattern contextPattern, SinkPattern sinkPattern) {
@@ -396,10 +444,10 @@ public class CodeSampleCreator {
             inits.add(pattern.generateInitStatementAst(patternStorage));
         }
     }
-    
+
     private int written = 0;
 
-    private boolean writeFiles(String folder, StringBuffer content, String findSinkId, SinkPattern sinkPattern, String storePath, boolean isVulnerable, String vulnDescription, ContextPattern contextPattern) {
+    private boolean writeFiles(String folder, StringBuffer content, String findSinkId, SinkPattern sinkPattern, String storePath, boolean isVulnerable, String vulnDescription, ContextPattern contextPattern, String readmeDescription) {
         String srcFolder = folder + "/src";
         String fileName = "sample.php";
         String subFile = "src/" + fileName;
@@ -438,14 +486,52 @@ public class CodeSampleCreator {
                 sarifWriter.write(sarifExporter.export());
                 sarifWriter.flush();
                 sarifWriter.close();
+
+                try {
+                    boolean valid = validateSarifFile(folder + "/manifest.sarif");
+                    if (!valid) {
+                        System.err.println("Sarif has incorrect format: " + folder + "/manifest.sarif");
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(CodeSampleCreator.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ProcessingException ex) {
+                    Logger.getLogger(CodeSampleCreator.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
+            // create readme
+            FileWriter readmeWriter = new FileWriter(folder + "/README.md");
+            readmeWriter.write(readmeDescription);
+            readmeWriter.flush();
+            readmeWriter.close();
+
+            // create makefile
+            createMakeFile(folder);
         } catch (IOException ex) {
             Logger.getLogger(CodeSampleCreator.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+
         written++;
         return true;
+    }
+
+    private void createMakeFile(String dirPath) throws IOException {
+        String content = ".DEFAULT_GOAL=help\n"
+                + ".PHONY: build help\n"
+                + "TARGET = src/sample.php\n"
+                + "\n"
+                + "\n"
+                + "build: $(TARGET) ## Build the test case\n"
+                + "	php -l '$(TARGET)'\n"
+                + "\n"
+                + "help: ## Show this help\n"
+                + "	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = \":.*?## \"}; {printf \"\\033[36m%-30s\\033[0m %s\\n\", $$1, $$2}'";
+        
+        FileWriter makeFile = new FileWriter(dirPath + "/Makefile");
+        makeFile.write(content);
+        makeFile.flush();
+        makeFile.close();
     }
 
     private void addSinkToStmtList(SinkPattern sinkPattern, GenerationData sink, TreeNode<INode> stmtList) {
@@ -476,6 +562,16 @@ public class CodeSampleCreator {
                 Logger.getLogger(CodeSampleCreator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    private boolean validateSarifFile(String path) throws ParseException, IOException, ProcessingException {
+
+        JsonNode sarifNode = JsonLoader.fromPath(path);
+        ProcessingReport report = schema.validate(sarifNode);
+        ProcessingReport report210 = schema210.validate(sarifNode);
+
+        return report.isSuccess() && report210.isSuccess();
+
     }
 
     protected List<GenerateFile> mergedFiles(List<GenerateFile>... generateFiles) {

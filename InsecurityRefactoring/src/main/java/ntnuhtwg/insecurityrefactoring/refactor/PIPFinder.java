@@ -32,6 +32,7 @@ import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SanitizePattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SinkPattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.PatternStorage;
+import ntnuhtwg.insecurityrefactoring.base.pippersist.PIPPersist;
 import ntnuhtwg.insecurityrefactoring.refactor.temppattern.MissingCall;
 import ntnuhtwg.insecurityrefactoring.refactor.temppattern.TempPattern;
 import scala.NotImplementedError;
@@ -47,6 +48,7 @@ public class PIPFinder {
     private Map<MissingCall, Integer> missingCalls = new HashMap<>();
     private PatternStorage patternStorage;
     private Map<SinkPattern, Integer> sinkCount = new HashMap<>();
+    private String scanCachePath;
     
     
     public void rescan(Neo4jDB db, PatternStorage patternStorage, List<TempPattern> tempPatterns, ScanProgress scanProgress, boolean controlFlowCheck){
@@ -83,7 +85,7 @@ public class PIPFinder {
                 for (TempPattern tempPattern : tempPatterns) {
                     if (tempPattern.getPassthroughPattern() != null && tempPattern.getMissingCall().getName().equals(callName)) {
                         System.out.println("add to rescan" + callName);
-                        ACIDTreeCreator backwardDataflow = new ACIDTreeCreator(db, patternStorage1, result.getObj(), result.getSinkPattern(), controlFlowCheck);
+                        ACIDTreeCreator backwardDataflow = new ACIDTreeCreator(db, patternStorage1, result.getObj(), result.getSinkPattern(), controlFlowCheck, this.scanCachePath);
                         backwardDataflow.setReplaceIndex(i);
                         return backwardDataflow;
                     }
@@ -125,54 +127,25 @@ public class PIPFinder {
             }
     }
     
-    public void findPips(Neo4jDB db, PatternStorage patternStorage, List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation){
+    public void findPips(Neo4jDB db, PatternStorage patternStorage, List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation, String scanPath, boolean fromCache){
         allResults.clear();
         missingCalls.clear();
         sinkCount.clear();
         DataflowDSL dsl = new DataflowDSL(db);
         this.patternStorage = patternStorage;
+        this.scanCachePath = scanPath + "/.scan_cache";   
         
-        Collection<SinkPattern> toScan = patternStorage.getSinks();
-        
-        if(specificPatterns != null && !specificPatterns.isEmpty()){
-            toScan = new LinkedList<>();
-            for(String specificPattern : specificPatterns){
-                SinkPattern sinkPattern = patternStorage.getSinkPattern(specificPattern);
-                if(sinkPattern == null){
-                    throw new NotImplementedError("tried to scan a sink pattern that does not exists: " + specificPattern);
-                }
-                
-                toScan.add(sinkPattern);
-            }
-        }
         List<ACIDTreeCreator> backwardDataflows = new LinkedList<>();
-        scanProgress.setnSinkTypes(toScan.size());
-        int sinksSearched =0;
-        for(SinkPattern pattern : toScan){
-//            System.out.print("Sink(" + pattern.getName() + "): ");
-
-            List<INode> sinks = List.of();
-            try {
-                sinks = db.findAll(pattern.findQuery());
-            } catch (TimeoutException ex) {
-                ex.printErrorMessage("Too many sinks?? " + pattern);
-                
-            }
-            if(!sinks.isEmpty()){
-                System.out.println("Sink(" + pattern.getName() + "): " + sinks.size());
-            }
-            sinkCount.put(pattern, sinks.size());
-
-            for(INode sink : sinks){
-                if(specificLocation == null || Util.isPrePath(specificLocation, db, sink) ){
-                    backwardDataflows.add(new ACIDTreeCreator(db, patternStorage, sink, pattern, controlFlowCheck));
-                }
-                else if(specificLocation != null){
-                    System.out.println("skip" + sink);
-                }
-            }
-            scanProgress.setSinksSearched(++sinksSearched);
+        if (fromCache){
+            backwardDataflows = PIPPersist.getAllPips(scanCachePath, db, patternStorage, controlFlowCheck);
+            System.out.println("Loaded from cache: " + backwardDataflows.size());
         }
+        else{
+            PIPPersist.clearCache(scanCachePath);
+            backwardDataflows = findSinks(patternStorage, specificPatterns, scanProgress, db, specificLocation, controlFlowCheck);
+            System.out.println("Found sinks: " + backwardDataflows.size());
+        }
+        
         scanProgress.setnSinks(backwardDataflows.size());
         executeDataflows(backwardDataflows, scanProgress);
             
@@ -207,6 +180,48 @@ public class PIPFinder {
         for(Entry<MissingCall, Integer> entry : missingCalls.entrySet()){
             System.out.println( entry.getKey() + ":" + entry.getValue());
         }
+        System.out.println("Finished finding pips...");
+    }
+
+    private List<ACIDTreeCreator> findSinks(PatternStorage patternStorage1, List<String> specificPatterns, ScanProgress scanProgress, Neo4jDB db, SourceLocation specificLocation, boolean controlFlowCheck) throws NotImplementedError {
+        List<ACIDTreeCreator> backwardDataflows = new LinkedList<>();
+        Collection<SinkPattern> toScan = patternStorage1.getSinks();
+        if (specificPatterns != null && !specificPatterns.isEmpty()) {
+            toScan = new LinkedList<>();
+            for (String specificPattern : specificPatterns) {
+                SinkPattern sinkPattern = patternStorage1.getSinkPattern(specificPattern);
+                if (sinkPattern == null) {
+                    throw new NotImplementedError("tried to scan a sink pattern that does not exists: " + specificPattern);
+                }
+                toScan.add(sinkPattern);
+            }
+        }
+        scanProgress.setnSinkTypes(toScan.size());
+        int sinksSearched = 0;
+        for (SinkPattern pattern : toScan) {
+            System.out.println("Sink(" + pattern.getName() + "): ");
+            List<INode> sinks = List.of();
+            try {
+                sinks = db.findAll(pattern.findQuery());
+            } catch (TimeoutException ex) {
+                ex.printErrorMessage("Too many sinks?? " + pattern);
+                
+            }
+            if (!sinks.isEmpty()) {
+                System.out.println("Sink(" + pattern.getName() + "): " + sinks.size());
+            }
+            sinkCount.put(pattern, sinks.size());
+            for (INode sink : sinks) {
+                if (specificLocation == null || Util.isPrePath(specificLocation, db, sink)) {
+                    backwardDataflows.add(new ACIDTreeCreator(db, patternStorage1, sink, pattern, controlFlowCheck, this.scanCachePath));
+                } else if (specificLocation != null) {
+                    System.out.println("skip" + sink);
+                }
+            }
+            scanProgress.setSinksSearched(++sinksSearched);
+        }
+        
+        return backwardDataflows;
     }
     
     public void setTempPatterns(List<TempPattern> tempPatterns){

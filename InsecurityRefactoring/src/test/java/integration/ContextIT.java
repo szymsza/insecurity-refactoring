@@ -47,7 +47,7 @@ public class ContextIT {
         
         
         // dot assign
-        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);      
+        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);      
         
         List<ACIDTree> pipInformations = framework.getPipInformation();        
         Assert.assertEquals(1, pipInformations.size());
@@ -79,7 +79,7 @@ public class ContextIT {
         
         
         // dot assign
-        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);      
+        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);      
         
         List<ACIDTree> pipInformations = framework.getPipInformation();        
         Assert.assertEquals(1, pipInformations.size());
@@ -112,7 +112,7 @@ public class ContextIT {
         
         
         // dot assign
-        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null);      
+        framework.scan(pipFolder.getAbsolutePath(), true, new LinkedList<>(), new ScanProgress(), false, null, false);      
         
         List<ACIDTree> pipInformations = framework.getPipInformation();        
         Assert.assertEquals(1, pipInformations.size());

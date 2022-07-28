@@ -5,13 +5,14 @@
  */
 package ntnuhtwg.insecurityrefactoring.base;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author blubbomat
  */
-public class DataType {
+public class DataType implements Serializable{
 
     private final String type;
     

@@ -1,5 +1,5 @@
 {
-	"name":"_POST",	
+	"name":"$_POST",
 	"type":"source",
         "secure":false,
         "filters": [],

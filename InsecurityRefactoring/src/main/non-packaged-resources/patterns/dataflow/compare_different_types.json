@@ -1,5 +1,5 @@
 {
-	"name":"compare_different_types",
+	"name":"Compare different types",
 	"type":"dataflow",
         
         "pattern_type": "statement",

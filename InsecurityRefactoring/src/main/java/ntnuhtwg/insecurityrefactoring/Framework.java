@@ -85,7 +85,7 @@ public class Framework {
 
     }
 
-    public void scan(String path, boolean prepareDB, List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation) {
+    public void scan(String path, boolean prepareDB, List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation, boolean fromCache) {
         this.path = path;
         try {
             if (prepareDB) {
@@ -99,7 +99,7 @@ public class Framework {
                 scanProgress.joernImported();
             }
             printPatternInfo();
-            findPips(specificPatterns, scanProgress, controlFlowCheck, specificLocation);
+            findPips(specificPatterns, scanProgress, controlFlowCheck, specificLocation, fromCache);
         } catch (Exception ex) {
             System.out.println("Something went wrong...");
             ex.printStackTrace();
@@ -115,10 +115,10 @@ public class Framework {
         }
     }
 
-    public void findPips(List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation) {
+    public void findPips(List<String> specificPatterns, ScanProgress scanProgress, boolean controlFlowCheck, SourceLocation specificLocation, boolean fromCache) {
         connectDB();
         patternStorage.setTempPatterns(Collections.EMPTY_LIST);
-        pipFinder.findPips(db, patternStorage, specificPatterns, scanProgress, controlFlowCheck, specificLocation);
+        pipFinder.findPips(db, patternStorage, specificPatterns, scanProgress, controlFlowCheck, specificLocation, this.path, fromCache);
 
         refactoring = new InsecurityRefactoring(getDSL(), patternStorage);
     }
@@ -145,6 +145,7 @@ public class Framework {
                         continue;
                     }
                     DataflowPathInfo pathInformation = getPipPathInformation(source);
+//                    pathInformation.setContextInfo(sink.getSinkPattern().get);
                     pipInformation.addPossibleSource(pathInformation);
                 } catch (TimeoutException ex) {
                     Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
@@ -199,7 +200,7 @@ public class Framework {
 
         for (File subFolder : folder.listFiles()) {
             if (subFolder.isDirectory()) {
-                scan(subFolder.getAbsolutePath(), true, specificPatterns, scanProgress, controlFlowCheck, null);
+                scan(subFolder.getAbsolutePath(), true, specificPatterns, scanProgress, controlFlowCheck, null, false);
 
                 String resultFilePath = folderPath + "/" + subFolder.getName() + ".txt";
                 File resultsFile = new File(resultFilePath);

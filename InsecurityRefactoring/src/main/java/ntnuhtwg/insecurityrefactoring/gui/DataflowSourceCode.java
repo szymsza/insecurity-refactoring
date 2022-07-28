@@ -5,7 +5,7 @@
  */
 package ntnuhtwg.insecurityrefactoring.gui;
 
-import java.awt.Dimension;
+import java.awt.*;
 import javax.swing.JPanel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -21,12 +21,13 @@ public class DataflowSourceCode extends JPanel{
     RTextScrollPane refactoredPane;
 
     public DataflowSourceCode() {
-        this.setMinimumSize(new Dimension(300, 200));
-        refactored = new RSyntaxTextArea("", 20, 60);
-        refactored.setMinimumSize(new Dimension(300, 200));
-        refactored.setMinimumSize(new Dimension(300, 200));
+        this.setLayout(new BorderLayout());
+        this.setMinimumSize(new Dimension(100, 100));
+        refactored = new RSyntaxTextArea("", 2, 2);
+        refactored.setMinimumSize(new Dimension(100, 100));
         refactored.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PHP);
-        RTextScrollPane refactoredPane = new RTextScrollPane(refactored);
+        refactored.setEnabled(false);
+        refactoredPane = new RTextScrollPane(refactored);
         
         this.add(refactoredPane);
     }
@@ -35,6 +36,6 @@ public class DataflowSourceCode extends JPanel{
     
     
     public void refreshSourceCode(String sourceCode){
-        refactored.setText(sourceCode);
+        refactored.setText(sourceCode.equals("") ? "" : "<?\n" + sourceCode);
     }
 }

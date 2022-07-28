@@ -1,5 +1,5 @@
 {
-	"name":"backdoor_int_cast",
+	"name":"Backdoor: int cast",
 	"type":"dataflow",
         
         "pattern_type": "statement",

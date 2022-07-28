@@ -1,5 +1,5 @@
 {
-	"name":"nosanitization",	
+	"name":"No sanitization",
 	"type":"sanitize",
     
         "pattern_type": "expression",    

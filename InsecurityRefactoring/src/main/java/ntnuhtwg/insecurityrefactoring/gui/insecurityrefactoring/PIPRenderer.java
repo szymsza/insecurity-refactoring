@@ -6,75 +6,31 @@
 package ntnuhtwg.insecurityrefactoring.gui.insecurityrefactoring;
 
 import ntnuhtwg.insecurityrefactoring.gui.temppattern.TempPatternFrame;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Label;
+
+import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.StringJoiner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import ntnuhtwg.insecurityrefactoring.Framework;
-import ntnuhtwg.insecurityrefactoring.base.ASTNodeTypes;
 import ntnuhtwg.insecurityrefactoring.base.GlobalSettings;
 import ntnuhtwg.insecurityrefactoring.base.SourceLocation;
 import ntnuhtwg.insecurityrefactoring.base.Util;
-import ntnuhtwg.insecurityrefactoring.base.exception.TimeoutException;
 import ntnuhtwg.insecurityrefactoring.base.tree.DFATreeNode;
-import ntnuhtwg.insecurityrefactoring.base.db.neo4j.dsl.cypher.DataflowDSL;
-import ntnuhtwg.insecurityrefactoring.refactor.acid.ACIDTreeCreator;
-import ntnuhtwg.insecurityrefactoring.gui.abego.StringNode;
-import ntnuhtwg.insecurityrefactoring.gui.abego.StringNodeExtentProvider;
-import ntnuhtwg.insecurityrefactoring.gui.abego.StringTreePanel;
-import ntnuhtwg.insecurityrefactoring.base.db.neo4j.Neo4JConnector;
-import ntnuhtwg.insecurityrefactoring.base.db.neo4j.Neo4jDB;
-import ntnuhtwg.insecurityrefactoring.base.db.neo4j.node.INode;
 import ntnuhtwg.insecurityrefactoring.base.info.ACIDTree;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SanitizePattern;
 import ntnuhtwg.insecurityrefactoring.base.patterns.impl.SinkPattern;
 import ntnuhtwg.insecurityrefactoring.base.info.DataflowPathInfo;
 import ntnuhtwg.insecurityrefactoring.gui.DataflowSourceCode;
-import ntnuhtwg.insecurityrefactoring.refactor.analyze.ACIDAnalyzer;
 import ntnuhtwg.insecurityrefactoring.refactor.temppattern.ScanProgress;
 import ntnuhtwg.insecurityrefactoring.refactor.temppattern.TempPattern;
-import org.abego.treelayout.Configuration;
-import org.abego.treelayout.TreeLayout;
-import org.abego.treelayout.util.DefaultConfiguration;
-import org.abego.treelayout.util.DefaultTreeForTreeLayout;
+import ntnuhtwg.insecurityrefactoring.base.tools.SourceCodeProvider;
 import org.javatuples.Pair;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Values;
-import org.neo4j.driver.types.Node;
 
 /**
  *
@@ -86,12 +42,17 @@ public class PIPRenderer extends JPanel{
     private final String scanEverything = "Scan everything...";
     
     private JCheckBox skipPreScan = new JCheckBox("Skip pre scan", false);
+    private JCheckBox loadPipsFromCache = new JCheckBox(" Load PIPs from cache", false);
+    private JButton browseForPath = new JButton("Browse");
     private JButton findPip = new JButton("Find PIPs");
     
 //    private JTextField prePath = new JTextField(GlobalSettings.prePath);
-    private JTextField scanPath = new JTextField("/home/blubbomat/Development/simple");
+    private CustomTextField scanPath = new CustomTextField();
     private JTextField specificPath = new JTextField("");
 //    private JFileChooser scanPath = new JFileChooser("/home/blubbomat/Development/simple");
+
+    public static String scanAbsolutePath = "";
+
     private JButton chooseFile = new JButton("Choose File");
 //    private JFileChooser chooseFile = new JFileChooser()
 //    private JComboBox<DFATreeNode> results = new JComboBox<>();
@@ -101,8 +62,14 @@ public class PIPRenderer extends JPanel{
     private DefaultListModel<DataflowPathInfo> sourceListModel = new DefaultListModel();
     private JList<ACIDTree> results = new JList<>(listModel);
     private JList<DataflowPathInfo> sourceNodes = new JList<>(sourceListModel);
-    
-    
+
+    JScrollPane scrollPane = new JScrollPane();
+
+    private enum ScanStatus {
+        NONE, IN_PROGRESS, DONE,
+    }
+
+    private Component sourceNodesSpacing = Box.createVerticalStrut(GlobalSettings.basicSpacingSmaller);
     
     
     
@@ -141,52 +108,69 @@ public class PIPRenderer extends JPanel{
         
         this.setLayout(new BorderLayout());
         
-        JPanel west = new JPanel();
+        JPanel east = new JPanel();
         viewSpecificPattern.setMaximumSize(new Dimension(200, 20));
-        west.setLayout(new BoxLayout(west, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportView(results);
-        west.add(new JLabel("Specific sink location (path:lineno):"));
+        east.setLayout(new BoxLayout(east, BoxLayout.Y_AXIS));
+        setLeftBoxText("Begin PIP scan with the form above");
+        /*west.add(new JLabel("Specific sink location (path:lineno):"));
         west.add(specificPath);
         west.add(viewSpecificPattern);
         west.add(requiresSan);
         west.add(checkControlFunctions);
-        west.add(debugAddAllResults);
-        west.add(scrollPane);
-        west.add(sourceNodes);
-        west.add(preContext);
+        west.add(debugAddAllResults);*/
+        east.add(scrollPane);
+
+        east.add(sourceNodesSpacing);
+        sourceNodesSpacing.setVisible(false);
+        east.add(sourceNodes);
+        east.add(Box.createVerticalStrut(GlobalSettings.basicSpacingSmaller));
+
+        insecurityRefactor.setEnabled(false);
+        insecurityRefactor.setAlignmentX(Component.CENTER_ALIGNMENT);
+        east.add(insecurityRefactor);
+        /*west.add(preContext);
         west.add(postContext);
         west.add(showTempPatterns);
-        west.add(rescan);
+        west.add(rescan);*/
        
         
         JPanel northPanel = new JPanel();
+        northPanel.setBorder(new EmptyBorder(GlobalSettings.basicSpacingSmaller, GlobalSettings.basicSpacingSmallest, GlobalSettings.basicSpacingSmaller, GlobalSettings.basicSpacingSmallest));
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.X_AXIS));
-        northPanel.add(skipPreScan);
+        //northPanel.add(skipPreScan);
+        scanPath.setPlaceholder("An absolute path inside the Docker container (/home/data/...) or public git repo URL to scan for PIPs");
         northPanel.add(scanPath);
-        northPanel.add(scanSpecific);
+        northPanel.add(browseForPath);
+        northPanel.add(Box.createHorizontalStrut(GlobalSettings.basicSpacingSmaller));
+        //northPanel.add(scanSpecific);
+        northPanel.add(loadPipsFromCache);
+        northPanel.add(Box.createHorizontalStrut(GlobalSettings.basicSpacingSmaller));
+        findPip.setFont(findPip.getFont().deriveFont(Font.BOLD));
         northPanel.add(findPip);
-        northPanel.add(hideShowSource);
-        
+        //northPanel.add(hideShowSource);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setBorder(new EmptyBorder(0, GlobalSettings.basicSpacingSmallest, GlobalSettings.basicSpacingSmaller, GlobalSettings.basicSpacingSmallest));
+        centerPanel.setLayout(new GridLayout(1, 2));
+        east.setBorder(new EmptyBorder(0, 0, 0, GlobalSettings.basicSpacingSmallest));
+        centerPanel.add(east);
+        centerPanel.add(dataflowSourceCode);
+
         this.add(northPanel, BorderLayout.NORTH);
-        this.add(west, BorderLayout.WEST);
+        this.add(centerPanel, BorderLayout.CENTER);
         
-        this.add(dataflowSourceCode, BorderLayout.EAST);
+        //this.add(dataflowSourceCode, BorderLayout.EAST);
         
         JPanel south = new JPanel();
-        south.setBackground(Color.red);
-        south.setLayout(new GridLayout(1, 4));
+        south.setLayout(new GridLayout(1, 1));
         this.add(south, BorderLayout.SOUTH);
         
-        this.add(acidViewer, BorderLayout.CENTER);
-        
-        insecurityRefactor.setVisible(false);
-        south.add(insecurityRefactor);
+        //this.add(acidViewer, BorderLayout.CENTER);
         south.add(progressBar);
 //        south.add(prePath);
         
         hideShowSource.addActionListener((arg0) -> {
-            dataflowSourceCode.setVisible(!dataflowSourceCode.isVisible());
+            dataflowSourceCode.setEnabled(!dataflowSourceCode.isVisible());
         });
         
         
@@ -202,18 +186,33 @@ public class PIPRenderer extends JPanel{
                 actualRefactoringPanel.refresh(dataflowPath, sanitizeNodes, dataflowPath.getContextInfo());
                 refreshSourceCode(dataflowPath);
                 acidViewer.refreshTree(acidTree);
-                insecurityRefactor.setVisible(true);
+                insecurityRefactor.setEnabled(true);
             }
             else{
-                insecurityRefactor.setVisible(false);
+                insecurityRefactor.setEnabled(false);
             }
         });
-        
+
+        browseForPath.addActionListener((arg0) -> {
+            JFileChooser chooser = new JFileChooser(GlobalSettings.dataFolder);
+            chooser.setDialogTitle("Choose a directory to be scanned for PIPs");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                scanPath.setText(String.valueOf(chooser.getSelectedFile()));
+            }
+        });
+
         findPip.addActionListener((arg0) -> {
-            this.findPip.setEnabled(false);
+            startedScan();
             String specific = (String)scanSpecific.getSelectedItem();
             SourceLocation specificLoc = specificPath.getText().isBlank() ? null : new SourceLocation(specificPath.getText());
-            ScanTask scanTask = new ScanTask(framework, scanPath.getText(), scanEverything.equals(specific) ? null : specific, skipPreScan.isSelected(), this, this.checkControlFunctions.isSelected(), specificLoc);
+
+            String inputPath = scanPath.getText();
+            scanAbsolutePath = inputPath;
+
+            ScanTask scanTask = new ScanTask(framework, scanEverything.equals(specific) ? null : specific, skipPreScan.isSelected(), this, this.checkControlFunctions.isSelected(), specificLoc, loadPipsFromCache.isSelected());
             progressBar.setValue(0);
             scanTask.addPropertyChangeListener((PropertyChangeEvent arg1) -> {
                 PropertyChangeEvent prop = arg1;
@@ -308,6 +307,11 @@ public class PIPRenderer extends JPanel{
     public void addStartInsecurityRefactoringActionListener(ActionListener l){
         this.insecurityRefactor.addActionListener(l);
     }
+
+    private ActionListener startScanActionListener;
+    public void addStartScanActionListener(ActionListener l){
+        this.startScanActionListener = l;
+    }
     
     
     private void refreshSinks(){
@@ -329,6 +333,8 @@ public class PIPRenderer extends JPanel{
             System.out.println("Got sources: " + sourceNodes);
             sourceListModel.addAll(sourceNodes);
         }
+
+        sourceNodesSpacing.setVisible(sourceListModel.size() != 0);
     }
 
     
@@ -377,11 +383,55 @@ public class PIPRenderer extends JPanel{
         return listBefore;        
     }
 
+    void setLeftBoxText(String text) {
+        JLabel label = new JLabel(text);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setVerticalAlignment(JLabel.CENTER);
+        scrollPane.setViewportView(label);
+    }
+
+    void startedScan() {
+        this.browseForPath.setEnabled(false);
+        this.findPip.setEnabled(false);
+        this.scanPath.setEnabled(false);
+        sourceListModel.removeAllElements();
+        sourceNodesSpacing.setVisible(false);
+
+        setScanningInProgressText();
+        dataflowSourceCode.refreshSourceCode("");
+
+        progressBar.setStringPainted(true);
+        Color blue = new Color(0, 115, 255);
+        progressBar.setForeground(blue);
+
+        this.startScanActionListener.actionPerformed(null);
+    }
+
+    public void setScanningInProgressText() {
+        setLeftBoxText("Scanning in progress...");
+    }
+
+    public void setClonningRepoText() {
+        setLeftBoxText("Clonning the repository...");
+    }
+
     void finishedScan() {
         tempPatternFrame.refresh(framework.getMissingCalls());
         refreshPips();            
         refreshSinks();
+        progressBar.setValue(100);
+
+        Color green = new Color(0, 175, 0);
+        progressBar.setForeground(green);
+
+        if (results.getModel().getSize() > 0)
+            scrollPane.setViewportView(results);
+        else
+            setLeftBoxText("No PIPs found!");
+
+        this.browseForPath.setEnabled(true);
         this.findPip.setEnabled(true);
+        this.scanPath.setEnabled(true);
     }
     
     

@@ -48,6 +48,7 @@ public abstract class Pattern {
     private String name;
     private String patternFileLocation;
     private String basePattern;
+    private String patternNote;
 
     private List<String> initCodeLines = new LinkedList<>();
     
@@ -107,7 +108,18 @@ public abstract class Pattern {
     public void setPatternFileLocation(String patternFileLocation) {
         this.patternFileLocation = patternFileLocation;
     }
+
+    public String getPatternNote() {
+        return patternNote;
+    }
+
+    public void setPatternNote(String patternNote) {
+        this.patternNote = patternNote;
+    }
     
+    public boolean hasPatternNote(){
+        return patternNote != null && !patternNote.trim().equals("");
+    }
     
     
     public DataType getDataInputType() {

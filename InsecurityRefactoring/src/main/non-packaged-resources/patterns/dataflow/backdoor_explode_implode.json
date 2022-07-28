@@ -1,5 +1,5 @@
 {
-	"name":"backdoor_explode_implode",
+	"name":"Backdoor: Explode-Implode",
 	"type":"dataflow",
         
         "pattern_type": "statement",

@@ -68,8 +68,8 @@ public class SarifExporter {
     
     private String cweDescription(){
         switch(vulnType){
-            case"xss": return "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')";
-            case"sqli": return "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')";
+            case"xss": return "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting').";
+            case"sqli": return "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection').";
         }
         
         return "unknown vulnType: " + vulnType;
@@ -120,7 +120,7 @@ public class SarifExporter {
         driver.put("name", "SARD - SAMATE");
         driver.put("fullName", "Software Assurance Reference Dataset Project");
         driver.put("informationUri", "https://samate.nist.gov/SARD/");
-        driver.put("version", "5.0");
+        driver.put("version", "5.0.0");
         driver.put("organization", "NIST");
         
         JSONArray supportedTaxonomies = new JSONArray();
@@ -154,7 +154,7 @@ public class SarifExporter {
             
             JSONObject hashes = new JSONObject();
             artifact.put("hashes", hashes);
-            hashes.put("sha-1", Util.sha1FromFile(fullPath));            
+            hashes.put("sha-256", Util.sha256FromFile(fullPath));            
         }
         
         
@@ -170,8 +170,8 @@ public class SarifExporter {
         taxonomies.add(cwe);
         
         cwe.put("name", "CWE");
-        cwe.put("informationUri", "https://cwe.mitre.org/data/published/cwe_v4.4.pdf");
-        cwe.put("downloadUri", "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip");
+        cwe.put("informationUri", "https://cwe.mitre.org/data/published/cwe_v4.5.pdf");
+        cwe.put("downloadUri", "https://cwe.mitre.org/data/xml/cwec_v4.5.xml.zip");
         cwe.put("organization", "MITRE");
         
         JSONObject shortDescription = new JSONObject();
@@ -188,7 +188,6 @@ public class SarifExporter {
         tax.put("id", cweId());
         tax.put("name", cweDescription());
         
-        tax.put("version", "4.4");
         
         
         return taxonomies;

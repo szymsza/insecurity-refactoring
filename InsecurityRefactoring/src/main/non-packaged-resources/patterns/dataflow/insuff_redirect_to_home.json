@@ -1,5 +1,5 @@
 {
-	"name":"insuff_redirect_to_home",
+	"name":"Insufficient redirect home",
 	"type":"dataflow",
         
         "pattern_type": "statement",

@@ -1,5 +1,5 @@
 {
-	"name":"_GET",	
+	"name":"$_GET",
 	"type":"source",
         "secure":false,
         "filters": [],

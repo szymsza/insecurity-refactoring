@@ -1662,3 +1662,126 @@ WARNING: All illegal access operations will be denied in a future release
 2020-11-04 13:31:47.973+0000 INFO  Bolt enabled on 127.0.0.1:7687.
 2020-11-04 13:31:49.728+0000 INFO  Started.
 2020-11-04 13:31:51.095+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 19:59:28.952+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 19:59:28.981+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 19:59:29.005+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 19:59:31.636+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 19:59:33.345+0000 INFO  Started.
+2022-05-08 19:59:35.978+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:04:12.130+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:04:12.141+0000 INFO  Stopping...
+2022-05-08 20:04:12.219+0000 INFO  Stopped.
+2022-05-08 20:04:18.880+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:04:18.909+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:04:18.926+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:04:21.614+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:04:23.252+0000 INFO  Started.
+2022-05-08 20:04:26.009+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:13:38.780+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:13:38.812+0000 INFO  Stopping...
+2022-05-08 20:13:38.917+0000 INFO  Stopped.
+2022-05-08 20:14:42.020+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:14:42.036+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:14:42.052+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:14:45.217+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:14:46.960+0000 INFO  Started.
+2022-05-08 20:14:48.546+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:17:31.310+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:17:31.326+0000 INFO  Stopping...
+2022-05-08 20:17:31.410+0000 INFO  Stopped.
+2022-05-08 20:19:26.580+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:19:26.626+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:19:26.654+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:19:31.108+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:19:33.790+0000 INFO  Started.
+2022-05-08 20:19:37.034+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:22:57.312+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:22:57.323+0000 INFO  Stopping...
+2022-05-08 20:22:57.419+0000 INFO  Stopped.
+2022-05-08 20:23:28.951+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:23:29.000+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:23:29.033+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:23:32.379+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:23:33.818+0000 INFO  Started.
+2022-05-08 20:23:35.052+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:27:46.353+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:27:46.374+0000 INFO  Stopping...
+2022-05-08 20:27:46.465+0000 INFO  Stopped.
+2022-05-08 20:27:55.383+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:27:55.411+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:27:55.445+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:27:59.003+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:28:00.943+0000 INFO  Started.
+2022-05-08 20:28:02.530+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:36:43.974+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:36:43.993+0000 INFO  Stopping...
+2022-05-08 20:36:44.099+0000 INFO  Stopped.
+2022-05-08 20:36:53.037+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 20:36:53.107+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 20:36:53.147+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 20:36:58.098+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 20:37:01.747+0000 INFO  Started.
+2022-05-08 20:37:04.698+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 20:40:06.786+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 20:40:06.818+0000 INFO  Stopping...
+2022-05-08 20:40:06.961+0000 INFO  Stopped.
+2022-05-08 21:09:33.802+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 21:09:33.833+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 21:09:33.869+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 21:09:36.841+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 21:09:38.595+0000 INFO  Started.
+2022-05-08 21:09:41.581+0000 INFO  Remote interface available at http://localhost:7474/
+2022-05-08 21:11:54.166+0000 INFO  Neo4j Server shutdown initiated by request
+2022-05-08 21:11:54.186+0000 INFO  Stopping...
+2022-05-08 21:11:54.358+0000 INFO  Stopped.
+2022-05-08 22:10:09.656+0000 WARN  You are using an unsupported version of the Java runtime. Please use Oracle(R) Java(TM) Runtime Environment 8, OpenJDK(TM) 8 or IBM J9.
+2022-05-08 22:10:09.697+0000 INFO  ======== Neo4j 3.5.13 ========
+2022-05-08 22:10:09.729+0000 INFO  Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.eclipse.collections.impl.utility.ArrayListIterate (file:/home/blubbomat/development/FindPOI/neo4j-community-3.5.13/lib/eclipse-collections-9.2.0.jar) to field java.util.ArrayList.elementData
+WARNING: Please consider reporting this to the maintainers of org.eclipse.collections.impl.utility.ArrayListIterate
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-08 22:10:12.713+0000 INFO  Bolt enabled on 127.0.0.1:7687.
+2022-05-08 22:10:14.609+0000 INFO  Started.
+2022-05-08 22:10:17.459+0000 INFO  Remote interface available at http://localhost:7474/
